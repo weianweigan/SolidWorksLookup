@@ -1,0 +1,90 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System" #>
+<#@ assembly name="$(SolutionDir)packages\Xarial.XCad.SolidWorks.Interops.0.2.0\lib\net40\SolidWorks.Interop.sldworks.dll" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="SolidWorks.Interop.sldworks" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ output extension=".cs" #>
+using SolidWorks.Interop.sldworks;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace SldWorksLookup
+{
+    public class TypeMatcherUtil
+    {
+        public static Type Match(Type sourceType)
+        {
+            var name = sourceType.Name.Split('.').Last();
+            var hasValue = SolidWorksTypes.FirstOrDefault(p => p.Item1 == name);
+            return hasValue != null ? hasValue.Item2: sourceType;
+        }
+
+        public static List<Tuple<string, Type>> SolidWorksTypes = new List<Tuple<string, Type>>()
+        {
+<# 
+            List<TypeMatcher> listType = GetTypeList();
+            foreach(TypeMatcher type in listType)
+            {
+            #>
+                new Tuple<string,Type>("<#= type.Name #>", <#= type.TypeName #>),
+            <#
+            }
+#>
+           
+        };
+    }
+}
+
+
+<#+
+				//类
+public class TypeMatcher:IComparable<TypeMatcher>
+    {
+        public string Name { get; set; }
+        public string TypeName { get; set; }
+        public TypeMatcher(string name, string typeName)
+        {
+            this.Name = name;
+            this.TypeName = typeName;
+        }
+
+        public int CompareTo(TypeMatcher other)
+        {
+            if (other.TypeName == TypeName)
+            {
+                return 0;
+            }
+            else
+            {
+                return string.Compare(Name, other.Name);
+            }
+        }
+    }
+				
+				public List<TypeMatcher> GetTypeList()
+				{
+								Assembly assembly = Assembly.GetAssembly(typeof(IModelDoc2));
+
+                                Type[] types = assembly.GetTypes();
+								types = types.OrderBy(p => p.Name).ToArray();
+                                List<TypeMatcher> list = new List<TypeMatcher>();
+
+                                foreach (Type type in types)
+                                {
+                                    if (Regex.IsMatch(type.FullName,"SolidWorks.Interop.sldworks.I[A-Za-z]+"))
+                                    {
+                                        var name = type.FullName.Split('.').Last();
+                                        list.Add(new TypeMatcher(name.Replace("I",""), $"typeof({name})"));
+                                    }
+                                }
+							    list.Distinct();
+                                return list;
+				}
+
+#>

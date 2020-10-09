@@ -1,0 +1,263 @@
+﻿<ResourceDictionary  x:Class="SldWorksLookup.WpfResource"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SldWorksLookup"
+             xmlns:model ="clr-namespace:SldWorksLookup.Model"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" >
+    
+    <Style x:Key="LookupPropertyGrid" TargetType="xctk:PropertyGrid">
+        <Setter Property="ShowSearchBox" Value="False"/>
+        <Setter Property="ShowSortOptions" Value="False"/>
+        <Setter Property="ShowSummary" Value="False"/>
+        <Setter Property="EditorDefinitions">
+            <Setter.Value>
+                <xctk:EditorDefinitionCollection>
+                    <!--<xctk:EditorTemplateDefinition TargetProperties="{x:Type sys:Double}">
+                        <xctk:EditorTemplateDefinition.EditingTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="30"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Width="20" Source="{DynamicResource property}"/>
+                                    <xctk:DoubleUpDown Grid.Column="1" HorizontalContentAlignment="Left" IsEnabled="{Binding IsReadOnly}" Text="{Binding Value}" />
+                                </Grid>
+                            </DataTemplate>
+                        </xctk:EditorTemplateDefinition.EditingTemplate>
+                    </xctk:EditorTemplateDefinition>-->
+                    <!--<xctk:EditorTemplateDefinition TargetProperties="{x:Type sys:Boolean}">
+                        <xctk:EditorTemplateDefinition.EditingTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="30"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Width="20" Source="{DynamicResource property}"/>
+                                    <CheckBox Grid.Column="1" IsChecked="{Binding Value}" />
+                                </Grid>
+                            </DataTemplate>
+                        </xctk:EditorTemplateDefinition.EditingTemplate>
+                    </xctk:EditorTemplateDefinition>-->
+                    <!--<xctk:EditorTemplateDefinition TargetProperties="{x:Type sys:String}">
+                        <xctk:EditorTemplateDefinition.EditingTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="30"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Width="20" Source="{DynamicResource property}"/>
+                                    <TextBox Grid.Column="1" HorizontalAlignment="Left" IsEnabled="{Binding IsReadOnly}" Text="{Binding Value}" />
+                                </Grid>
+                            </DataTemplate>
+                        </xctk:EditorTemplateDefinition.EditingTemplate>
+                    </xctk:EditorTemplateDefinition>-->
+                    <xctk:EditorTemplateDefinition TargetProperties="{x:Type model:LookupValue}">
+                        <xctk:EditorTemplateDefinition.EditingTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="30"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Width="20" Grid.Column="0" DataContext="{Binding Value}">
+                                        <Image.Style>
+                                            <Style TargetType="Image">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding PropertyClsfi}" Value="{x:Static model:PropertyClsfi.Class}">
+                                                        <Setter Property="Source" Value="{DynamicResource class}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding PropertyClsfi}" Value="{x:Static model:PropertyClsfi.Property}">
+                                                        <Setter Property="Source" Value="{DynamicResource property}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding PropertyClsfi}" Value="{x:Static model:PropertyClsfi.Method}">
+                                                        <Setter Property="Source" Value="{DynamicResource method}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                    <Button Command="{Binding Value.OpenCommand}" ToolTip="{Binding Value.ToolTip}" IsEnabled="{Binding Value.CanSnoop}" HorizontalContentAlignment="Center" Background="White" BorderThickness="0" Grid.Column="1">
+                                        <TextBlock Text="{Binding Value.ValueName}" >
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Value.CanSnoop}" Value="true">
+                                                            <Setter Property="FontWeight" Value="Black"></Setter>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Value.HasExecuted}" Value="true">
+                                                            <Setter Property="Foreground" Value="Green"></Setter>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Button>
+                                </Grid>
+                            </DataTemplate>
+                        </xctk:EditorTemplateDefinition.EditingTemplate>
+                    </xctk:EditorTemplateDefinition>
+                </xctk:EditorDefinitionCollection>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <DrawingImage x:Key="class">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V16 H16 V0 H0 Z">
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Geometry="F1 M16,16z M0,0z M16,16L0,16 0,0 16,0z">
+                        <GeometryDrawing.Brush>
+                            <SolidColorBrush Color="#FFF6F6F6" Opacity="0" />
+                        </GeometryDrawing.Brush>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1 M16,16z M0,0z M16,6.586L13,3.586 11.586,5 9.414,5 10.414,4 6.414,0 5.586,0 0,5.586 0,6.414 4,10.414 6.414,8 7,8 7,13 8.586,13 11.586,16 12.414,16 16,12.414 16,11.586 13.914,9.5 16,7.414z" />
+                </DrawingGroup>
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Brush="#FFC27D1A" Geometry="F1 M16,16z M0,0z M13,10L15,12 12,15 10,13 11,12 8,12 8,7 6,7 4,9 1,6 6,1 9,4 7,6 12,6 13,5 15,7 12,10 10,8 11,7 9,7 9,11 12,11z" />
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="property">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V16 H16 V0 H0 Z">
+                <DrawingGroup.Transform>
+                    <TranslateTransform X="0.00032940506935119629" Y="0.037691276520490646" />
+                </DrawingGroup.Transform>
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Geometry="F1 M16,16z M0,0z M16,16L0,16 0,0 16,0z">
+                        <GeometryDrawing.Brush>
+                            <SolidColorBrush Color="#FFF6F6F6" Opacity="0" />
+                        </GeometryDrawing.Brush>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1 M16,16z M0,0z M16,5.5A5.46,5.46,0,0,1,9.693,10.934L9.615,10.922A5.439,5.439,0,0,1,8.804,10.731L4.268,15.268A2.5,2.5,0,0,1,0.732,11.732L5.269,7.2A5.452,5.452,0,0,1,5.078,6.388C5.078,6.363,5.07,6.337,5.066,6.311A5.5,5.5,0,1,1,16,5.5z" />
+                </DrawingGroup>
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Brush="#FF424242" Geometry="F1 M16,16z M0,0z M15,5.5A4.474,4.474,0,0,1,8.571,9.55L3.561,14.56A1.5,1.5,0,0,1,1.439,12.44L6.45,7.429A4.474,4.474,0,0,1,12.429,1.45L9.636,4.243 11.757,6.364 14.55,3.571A4.462,4.462,0,0,1,15,5.5z" />
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="method">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V16 H16 V0 H0 Z">
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Geometry="F1 M16,16z M0,0z M16,16L0,16 0,0 16,0z">
+                        <GeometryDrawing.Brush>
+                            <SolidColorBrush Color="#FFF6F6F6" Opacity="0" />
+                        </GeometryDrawing.Brush>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1 M16,16z M0,0z M15,3.349L15,11.749 8.975,16 8.075,16 1,11.582 1,3.327 7.6,0 8.713,0z" />
+                </DrawingGroup>
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Brush="#FFF0EFF1" Geometry="F1 M16,16z M0,0z M12.715,4.4L8.487,7.02 3.565,4.272 8.144,1.963z M3,5.1L8,7.894 8,13.594 3,10.473z M9,13.534L9,7.878 13,5.4 13,10.718z" />
+                </DrawingGroup>
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Brush="#FF652D90" Geometry="F1 M16,16z M0,0z M8.156,0.837L2,3.942 2,11.027 8.517,15.1 14,11.233 14,3.95z M12.715,4.4L8.487,7.02 3.565,4.272 8.144,1.963z M3,5.1L8,7.894 8,13.594 3,10.473z M9,13.534L9,7.878 13,5.4 13,10.718z" />
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="_3DDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V1024 H1024 V0 H0 Z">
+                <GeometryDrawing Brush="#FFFFB531" Geometry="F1 M1024,1024z M0,0z M938.666667,358.613333L938.666667,665.813333A170.922667,170.922667,0,0,1,831.146667,824.106667L575.146667,926.506667A171.136,171.136,0,0,1,448.426667,926.506667L192.426667,824.106667A170.538667,170.538667,0,0,1,85.333333,665.813333L85.333333,358.613333A170.666667,170.666667,0,0,1,192.426667,199.893333L448.426667,97.4933330000001A171.136,171.136,0,0,1,575.146667,97.4933330000001L831.146667,199.893333A171.093333,171.093333,0,0,1,938.666667,358.613333z" />
+                <GeometryDrawing Brush="#FF030835" Geometry="F1 M1024,1024z M0,0z M798.72,356.053333L614.4,429.866667A111.104,111.104,0,0,0,544,533.973333L544,766.08A32,32,0,0,1,480,766.08L480,533.973333A173.866667,173.866667,0,0,1,497.493333,456.746667A179.626667,179.626667,0,0,1,446.293333,444.373333L224.853333,356.053333A32,32,0,0,1,248.746667,296.746667L470.186667,385.066667A112.170667,112.170667,0,0,0,553.386667,385.066667L774.826667,296.746667A31.573333,31.573333,0,0,1,816.213333,314.24A31.872,31.872,0,0,1,798.72,356.053333z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="Download_16xDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V16 H16 V0 H0 Z">
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Geometry="F1 M16,16z M0,0z M16,0L16,16 0,16 0,0z">
+                        <GeometryDrawing.Brush>
+                            <SolidColorBrush Color="#FFF6F6F6" Opacity="0" />
+                        </GeometryDrawing.Brush>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1 M16,16z M0,0z M7.672,16L7.672,16 8.328,16 15.621,8.707 12.793,5.879 10,8.672 10,0 6,0 6,8.672 3.207,5.879 0.379,8.707 7.672,16z" />
+                </DrawingGroup>
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Brush="#FF00539C" Geometry="F1 M16,16z M0,0z M3.207,7.293L7,11.086 7,1 9,1 9,11.086 12.793,7.293 14.207,8.707 8,14.914 1.793,8.707z" />
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="StatusRun_16xDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V16 H16 V0 H0 Z">
+                <GeometryDrawing Geometry="F1 M16,16z M0,0z M16,16L0,16 0,0 16,0 16,16z">
+                    <GeometryDrawing.Brush>
+                        <SolidColorBrush Color="#FFF6F6F6" Opacity="0" />
+                    </GeometryDrawing.Brush>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1 M16,16z M0,0z M0,8C0,3.582 3.582,0 8,0 12.418,0 16,3.582 16,8 16,12.418 12.418,16 8,16 3.582,16 0,12.418 0,8z" />
+                <GeometryDrawing Brush="#FF339933" Geometry="F1 M16,16z M0,0z M8,1C4.135,1 1,4.134 1,8 1,11.865 4.135,15 8,15 11.865,15 15,11.865 15,8 15,4.134 11.865,1 8,1z M6,12L6,4 12,8 6,12z" />
+                <GeometryDrawing Brush="#FFFFFFFF" Geometry="F1 M16,16z M0,0z M6,12L6,4 12,8 6,12z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="StatusOK_16xDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V16 H16 V0 H0 Z">
+                <DrawingGroup.Transform>
+                    <TranslateTransform X="0.00023357276222668588" Y="0.00023357276222668588" />
+                </DrawingGroup.Transform>
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Geometry="F1 M16,16z M0,0z M16,16L0,16 0,0 16,0z">
+                        <GeometryDrawing.Brush>
+                            <SolidColorBrush Color="#FFF6F6F6" Opacity="0" />
+                        </GeometryDrawing.Brush>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1 M16,16z M0,0z M8,16A8,8,0,1,1,16,8A8.009,8.009,0,0,1,8,16z" />
+                    <GeometryDrawing Brush="#FF339933" Geometry="F1 M16,16z M0,0z M8,1A7,7,0,1,0,15,8A7,7,0,0,0,8,1z M6.3,12.389L3.043,9.132 4.457,7.718 6.3,9.561 11.543,4.318 12.957,5.732z" />
+                    <GeometryDrawing Brush="#FFFFFFFF" Geometry="F1 M16,16z M0,0z M6.3,12.389L3.043,9.132 4.457,7.718 6.3,9.561 11.543,4.318 12.957,5.732z" />
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="GitHubDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V1024 H1049 V0 H0 Z">
+                <GeometryDrawing Brush="#FF191717" Geometry="F1 M1049,1024z M0,0z M524.979332,0C234.676191,0 0,234.676191 0,524.979332 0,757.04801 150.366597,953.480674 358.967656,1023.01436 385.042788,1028.229386 394.60367,1011.715136 394.60367,997.808399 394.60367,985.640004 393.734499,943.919792 393.734499,900.461238 247.713758,931.751397 217.29277,837.88092 217.29277,837.88092 193.825151,777.038944 159.058308,761.393865 159.058307,761.393865 111.253898,729.234535 162.534991,729.234535 162.534992,729.234535 215.554428,732.711219 243.367902,783.123142 243.367902,783.123142 290.30314,863.086881 365.921024,840.488433 396.342012,826.581696 400.687867,792.684024 414.594605,769.216405 429.370513,756.178839 312.901588,744.010444 190.348466,698.813548 190.348466,497.165857 190.348466,439.800566 211.208572,392.865328 244.237073,356.360142 239.022047,343.322576 220.769454,289.433969 249.4521,217.29277 249.4521,217.29277 293.779825,203.386033 393.734499,271.181377 435.454711,259.882153 480.651607,253.797955 524.979332,253.797955 569.307057,253.797955 614.503953,259.882153 656.224165,271.181377 756.178839,203.386032 800.506564,217.29277 800.506564,217.29277 829.18921,289.43397 810.936617,343.322576 805.72159,356.360142 839.619262,392.865327 859.610197,439.800566 859.610197,497.165857 859.610197,698.813547 737.057075,743.141272 619.718979,756.178839 638.840743,772.69309 655.354993,803.983248 655.354994,853.526 655.354994,923.928857 654.485823,980.424978 654.485822,997.808399 654.485822,1011.715136 664.046704,1028.229387 690.121837,1023.01436 898.722896,953.480674 1049.089493,757.04801 1049.089492,524.979332 1049.958663,234.676191 814.413301,0 524.979332,0z" />
+                <GeometryDrawing Brush="#FF191717" Geometry="F1 M1049,1024z M0,0z M199.040177,753.571326C198.171006,756.178839 193.825151,757.04801 190.348466,755.309668 186.871781,753.571326 184.264268,750.094642 186.002611,747.487128 186.871782,744.879615 191.217637,744.010444 194.694322,745.748786 198.171007,747.487128 199.909348,750.963812 199.040177,753.571326z M192.086808,749.22547 M219.900283,777.038945C217.29277,779.646458 212.077743,777.908116 209.47023,774.431431 205.993546,770.954747 205.124375,765.73972 207.731888,763.132207 210.339401,760.524694 214.685257,762.263036 218.161941,765.739721 221.638625,770.085576 222.507796,775.300603 219.900283,777.038945z M214.685257,771.823918 M240.760389,807.459932C237.283705,810.067445 232.068678,807.459932 229.461165,803.114077 225.984481,798.768222 225.984481,792.684024 229.461165,790.945682 232.937849,788.338169 238.152876,790.945682 240.760389,795.291537 244.237073,799.637392 244.237073,804.852419 240.760389,807.459932z M240.760389,807.459932 M269.443034,837.011749C266.835521,840.488433 260.751323,839.619262 255.536297,835.273407 251.190442,830.927552 249.452099,824.843354 252.928784,822.235841 255.536297,818.759157 261.620495,819.628328 266.835521,823.974183 271.181376,827.450867 272.050547,833.535065 269.443034,837.011749z M269.443034,837.011749 M308.555733,853.526C307.686562,857.871855 301.602364,859.610198 295.518167,857.871855 289.433969,856.133513 285.957285,850.918486 286.826456,847.441802 287.695627,843.095947 293.779825,841.357604 299.864022,843.095947 305.94822,844.834289 309.424904,849.180145 308.555733,853.526z M308.555733,853.526 M351.145116,857.002684C351.145116,861.348539 345.93009,864.825224 339.845892,864.825224 333.761694,864.825224 328.546668,861.34854 328.546668,857.002684 328.546668,852.656828 333.761694,849.180144 339.845892,849.180144 345.93009,849.180144 351.145116,852.656828 351.145116,857.002684z M351.145116,857.002684 M391.126986,850.049315C391.996157,854.39517 387.650302,858.741026 381.566104,859.610197 375.481906,860.479368 370.26688,857.871855 369.397709,853.526 368.528538,849.180145 372.874393,844.834289 378.95859,843.965118 385.042788,843.095947 390.257814,845.70346 391.126986,850.049315z M391.126986,850.049315" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="RigidRelationshipInfo_16xDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V16 H16 V0 H0 Z">
+                <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1 M16,16z M0,0z M11.5,7C11.045,7,10.614,7.088,10.2,7.214L12.414,5 7.414,0 1.586,0 4.586,3 0,3 0,7 4.586,7 1.586,10 7.276,10A4.454,4.454,0,0,0,7,11.5C7,13.981 9.019,16 11.5,16 13.981,16 16,13.981 16,11.5 16,9.019 13.981,7 11.5,7z" />
+                <GeometryDrawing Brush="#FF424242" Geometry="F1 M16,16z M0,0z M7,1L4,1 7,4 1,4 1,6 7,6 4,9 7,9 11,5z" />
+                <GeometryDrawing Brush="#FF1BA1E2" Geometry="F1 M16,16z M0,0z M11.5,8A3.5,3.5,0,1,0,11.5,15A3.5,3.5,0,0,0,11.5,8z M12,14L11,14 11,11 12,11 12,14z M12,10L11,10 11,9 12,9 12,10z" />
+                <GeometryDrawing Brush="#FFFFFFFF" Geometry="F1 M16,16z M0,0z M12,14L11,14 11,11 12,11 12,14z M12,9L11,9 11,10 12,10 12,9z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+</ResourceDictionary>

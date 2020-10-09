@@ -1,0 +1,75 @@
+﻿<Window x:Class="SldWorksLookup.View.LookupPropertyWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SldWorksLookup.View"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:model="clr-namespace:SldWorksLookup.Model"
+             mc:Ignorable="d" 
+             Height ="700" Width="700" Title="SolidWorks Lookup 0.0.1">
+    <Window.Resources>
+        <ResourceDictionary Source="pack://application:,,,/SldWorksLookup;component/WpfResource.xaml"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <TreeView Margin="2,2,5,0" ItemsSource="{Binding Trees}" SelectedItemChanged="TreeView_SelectedItemChanged">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                    <StackPanel Margin="-1,0,0,0" Orientation="Horizontal">
+                        <Button Background="White" BorderThickness="0" ToolTip="{Binding NodeToolTip}" Command="{Binding RunCommand}">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding NodeStatus}" Value="{x:Static model:NodeStatus.None}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <Image>
+                                <Image.Style>
+                                    <Style TargetType="Image">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding NodeStatus}" Value="{x:Static model:NodeStatus.NeedRun}">
+                                                <Setter Property="Source" Value="{StaticResource StatusRun_16xDrawingImage}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding NodeStatus}" Value="{x:Static model:NodeStatus.Ok}">
+                                                <Setter Property="Source" Value="{StaticResource StatusOK_16xDrawingImage}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </Button>
+                        <TextBlock Text="{Binding Name}"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+        <GridSplitter Width="5" Background="AliceBlue"/>
+        <xctk:PropertyGrid Margin="2" Style="{StaticResource LookupPropertyGrid}" SelectedObject="{Binding Properties}" x:Name="_proGrid" Grid.Column="1">
+        </xctk:PropertyGrid>
+        <Button Grid.Row="1" Width="75" Height="25" Margin="0,0,120,0" Visibility="{Binding RunButtonVisibility}" Command="{Binding RunCommand}" HorizontalAlignment="Right" Grid.Column="1">Run</Button>
+        <Button Grid.Row="1" Width="75" Height="25" Margin="0,0,20,0"  HorizontalAlignment="Right" Command="{Binding ExitCommand}" Grid.Column="1">Exit</Button>
+        <Grid Grid.Row="1">
+            <Label HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Give me a star">
+                <Hyperlink Click="Hyperlink_Click" Name="_link" NavigateUri="https://github.com/weianweigan/SolidWorksLookup">
+                    <Image Width="15" Height="15" Source="{StaticResource GitHubDrawingImage}"></Image>
+                </Hyperlink>
+            </Label>
+            <Label Margin="25,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="License and Information">
+                <Hyperlink Click="Hyperlink_Click" NavigateUri="https://github.com/weianweigan/SolidWorksLookup">
+                    <Image Width="15" Height="15" Source="{StaticResource RigidRelationshipInfo_16xDrawingImage}"></Image>
+                </Hyperlink>
+            </Label>
+        </Grid>
+    </Grid>
+</Window>
