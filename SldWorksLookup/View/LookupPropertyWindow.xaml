@@ -60,14 +60,14 @@
         <Button Grid.Row="1" Width="75" Height="25" Margin="0,0,120,0" Visibility="{Binding RunButtonVisibility}" Command="{Binding RunCommand}" HorizontalAlignment="Right" Grid.Column="1">Run</Button>
         <Button Grid.Row="1" Width="75" Height="25" Margin="0,0,20,0"  HorizontalAlignment="Right" Command="{Binding ExitCommand}" Grid.Column="1">Exit</Button>
         <Grid Grid.Row="1">
-            <Label HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Give me a star">
+            <Label Margin="25,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Give me a star">
                 <Hyperlink Click="Hyperlink_Click" Name="_link" NavigateUri="https://github.com/weianweigan/SolidWorksLookup">
                     <Image Width="15" Height="15" Source="{StaticResource GitHubDrawingImage}"></Image>
                 </Hyperlink>
             </Label>
-            <Label Margin="25,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="License and Information">
-                <Hyperlink Click="Hyperlink_Click" NavigateUri="https://github.com/weianweigan/SolidWorksLookup">
-                    <Image Width="15" Height="15" Source="{StaticResource RigidRelationshipInfo_16xDrawingImage}"></Image>
+            <Label HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="License">
+                <Hyperlink Click="Hyperlink_Click" NavigateUri="https://github.com/weianweigan/SolidWorksLookup/blob/main/LICENSE">
+                    <Image Width="15" Height="15" Source="{StaticResource license}"></Image>
                 </Hyperlink>
             </Label>
         </Grid>

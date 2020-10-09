@@ -47,8 +47,7 @@ Click *.bat file to Install or UnInstall.
 ## Invoke method
 
 <div>
-    <img width="600" src=".\resources\invokemethod
-.png">
+    <img width="600" src=".\resources\invokemethod.png">
 </div>
 
 # License
