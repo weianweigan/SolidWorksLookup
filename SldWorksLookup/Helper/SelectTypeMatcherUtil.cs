@@ -58,7 +58,7 @@ namespace SldWorksLookup
                     type = typeof(IGtol);
                     break;
                 case swSelectType_e.swSelDIMENSIONS:
-                    type = typeof(DisplayDimension);
+                    type = typeof(IDisplayDimension);
                     break;
                 case swSelectType_e.swSelNOTES:
                     type = typeof(INote);

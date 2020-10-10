@@ -111,6 +111,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>TypeMatcherUtil.tt</DependentUpon>
     </Compile>
+    <Compile Include="Helper\TypeNameToDefinition.cs" />
     <Compile Include="Model\Instance\InstanceProperty.cs" />
     <Compile Include="Model\Tree\IAssemblyDocInstanceTree.cs" />
     <Compile Include="Model\Tree\IBody2InstanceTree.cs" />
@@ -178,6 +179,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TypeMatcherUtil.cs</LastGenOutput>
     </Content>
+    <Content Include="Helper\typeNameList.txt" />
     <Content Include="RegAsm.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

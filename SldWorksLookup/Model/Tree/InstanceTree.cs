@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight.Command;
+using System.Collections.Generic;
 
 namespace SldWorksLookup.Model
 {
@@ -139,7 +140,14 @@ namespace SldWorksLookup.Model
         public void AddNode<TParent, TNode>(Func<TParent, object> func, Func<TNode, string> nodeNameFunc = null)
             where TParent : class where TNode : class
         {
-            var node = func?.Invoke(InstanceProperty.Instance as TParent) as TNode;
+            var parent = InstanceProperty.Instance as TParent;
+
+            if (parent == null)
+            {
+                return;
+            }
+
+            var node = func?.Invoke(parent) as TNode;
 
             //check
             if (node == null)
@@ -151,6 +159,35 @@ namespace SldWorksLookup.Model
             if (ins != null)
             {
                 Children.Add(InstanceTree.Create(ins, nodeNameFunc?.Invoke(node)));
+            }
+        }
+
+        public void AddNode<TParent>(Func<TParent, object> func,Type nodeType ,Func<object, string> nodeNameFunc = null)
+            where TParent : class
+        {
+            var parent = InstanceProperty.Instance as TParent;
+
+            if (parent == null)
+            {
+                return;
+            }
+
+            var node = func?.Invoke(parent);
+
+            //check
+            if (node == null)
+            {
+                return;
+            }
+            
+            //类型转换和生成属性
+            if (nodeType.IsInstanceOfType(node))
+            {
+                var ins = new InstanceProperty(node, nodeType, false);
+                if (ins != null)
+                {
+                    Children.Add(InstanceTree.Create(ins, nodeNameFunc?.Invoke(node)));
+                }
             }
         }
     }
