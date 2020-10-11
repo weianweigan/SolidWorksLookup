@@ -1,28 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SolidWorks.Interop.sldworks;
 
 namespace SldWorksLookup
 {
-    public static class TypeNameToDefinition
+    public static class TypeNameToDefinitionUtil
     {
         /// <summary>
         /// 获取特征对应的接口
         /// </summary>
-        /// <param name="name">使用<see cref="IFeature.GetTypeName2()"/> 获取的值</param>
+        /// <param name="typeName">使用<see cref="IFeature.GetTypeName2()"/> 获取的值</param>
         /// <returns>对应的类型，可能会返回两种类型</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static List<Type> Match(string name)
+        public static List<Type> Match(string typeName)
         {
-            List<Type> featDataTypes = new List<Type>();
-            switch (name)
+            List<Type> featDataTypes = new List<Type>(2);
+
+            switch (typeName)
             {
                 //-----------Assembly-------------
-                case "AsmExploder":ThrowMatchNoneException(name, "Assembly exploded view in ConfigurationManager");break;
-                case "CompExplodeStep": ThrowMatchNoneException(name, "Explode step for assembly exploded view"); break;
+                case "AsmExploder":ThrowMatchNoneException(typeName, "Assembly exploded view in ConfigurationManager");break;
+                case "CompExplodeStep": ThrowMatchNoneException(typeName, "Explode step for assembly exploded view"); break;
                 case "ExplodeLineProfileFeature": featDataTypes.Add(typeof(ISketch)); break;
                 case "InContextFeatHolder": featDataTypes.Add(typeof(IFeature)); break;
                 case "MagneticGroundPlane": featDataTypes.Add(typeof(IFeature)); break;
@@ -53,10 +51,10 @@ namespace SldWorksLookup
                 case "AdvHoleWzd": featDataTypes.Add(typeof(IAdvancedHoleFeatureData)); break;
                 case "APattern": featDataTypes.Add(typeof(IFillPatternFeatureData)); break;
                 case "BaseBody": featDataTypes.Add(typeof(IExtrudeFeatureData2)); break; 
-                case "Bending": ThrowMatchNoneException(name, "Flex feature"); break;
+                case "Bending": ThrowMatchNoneException(typeName, "Flex feature"); break;
                 case "Blend": featDataTypes.Add(typeof(ILoftFeatureData)); break;
                 case "BlendCut": featDataTypes.Add(typeof(ILoftFeatureData)); break;
-                case "BodyExplodeStep": ThrowMatchNoneException(name); break;
+                case "BodyExplodeStep": ThrowMatchNoneException(typeName); break;
                 case "Boss":featDataTypes.Add(typeof(IExtrudeFeatureData2)); break; 
                 case "BossThin":featDataTypes.Add(typeof(IExtrudeFeatureData2)); break; 
                 case "Chamfer":featDataTypes.Add(typeof(IChamferFeatureData2)); break; 
@@ -68,7 +66,7 @@ namespace SldWorksLookup
                 case "CurvePattern": featDataTypes.Add(typeof(ICurveDrivenPatternFeatureData)); break;
                 case "Cut":featDataTypes.Add(typeof(IExtrudeFeatureData2)); break; 
                 case "CutThin":featDataTypes.Add(typeof(IExtrudeFeatureData2)); break; 
-                case "Deform": ThrowMatchNoneException(name); break;
+                case "Deform": ThrowMatchNoneException(typeName); break;
                 case "DeleteBody": featDataTypes.Add(typeof(IDeleteBodyFeatureData)); break;
                 case "DelFace": featDataTypes.Add(typeof(IDeleteFaceFeatureData)); break;
                 case "DerivedCirPattern": featDataTypes.Add(typeof(IDerivedPatternFeatureData)); break;
@@ -83,7 +81,7 @@ namespace SldWorksLookup
                 case "Helix": featDataTypes.Add(typeof(IHelixFeatureData)); break;
                 case "HoleSeries":featDataTypes.Add(typeof(IHoleSeriesFeatureData2)); break; 
                 case "HoleWzd":featDataTypes.Add(typeof(IWizardHoleFeatureData2)); break; 
-                case "Imported": ThrowMatchNoneException(name); ; break;
+                case "Imported": ThrowMatchNoneException(typeName); ; break;
                 case "LocalChainPattern": featDataTypes.Add(typeof(IChainPatternFeatureData)); break;
                 case "LocalCirPattern": featDataTypes.Add(typeof(ILocalCircularPatternFeatureData)); break;
                 case "LocalCurvePattern": featDataTypes.Add(typeof(ILocalCurvePatternFeatureData)); break;
@@ -97,7 +95,7 @@ namespace SldWorksLookup
                 case "MirrorStock": featDataTypes.Add(typeof(IMirrorPartFeatureData)); break;
                 case "MoveCopyBody": featDataTypes.Add(typeof(IMoveCopyBodyFeatureData)); break;
                 case "NetBlend": featDataTypes.Add(typeof(IBoundaryBossFeatureData)); break;
-                case "PrtExploder": ThrowMatchNoneException(name); break;
+                case "PrtExploder": ThrowMatchNoneException(typeName); break;
                 case "Punch": featDataTypes.Add(typeof(IIndentFeatureData)); break;
                 case "ReplaceFace": featDataTypes.Add(typeof(IReplaceFaceFeatureData)); break;
                 case "RevCut":featDataTypes.Add(typeof(IRevolveFeatureData2)); break;
@@ -107,12 +105,12 @@ namespace SldWorksLookup
                 case "Rib":featDataTypes.Add(typeof(IRibFeatureData)); break; 
                 case "Rip": featDataTypes.Add(typeof(IRipFeatureData)); break;
                 case "Sculpt": featDataTypes.Add(typeof(IIntersectFeatureData)); break;
-                case "Shape": ThrowMatchNoneException(name); break;
+                case "Shape": ThrowMatchNoneException(typeName); break;
                 case "Shell": featDataTypes.Add(typeof(IShellFeatureData)); break;
                 case "SketchHole":featDataTypes.Add(typeof(ISimpleHoleFeatureData2)); break; 
                 case "SketchPattern": featDataTypes.Add(typeof(ISketchPatternFeatureData)); break;
                 case "Split": featDataTypes.Add(typeof(ISplitBodyFeatureData)); break;
-                case "SplitBody": ThrowMatchNoneException(name); break;
+                case "SplitBody": ThrowMatchNoneException(typeName); break;
                 case "Stock": featDataTypes.Add(typeof(IDerivedPartFeatureData)); break;
                 case "Sweep": featDataTypes.Add(typeof(ISweepFeatureData)); break;
                 case "SweepCut": featDataTypes.Add(typeof(ISweepFeatureData)); break;
@@ -138,7 +136,7 @@ namespace SldWorksLookup
                 case "WeldTableAnchor": featDataTypes.Add(typeof(ITableAnchor)); break;
 
                 //-------------Folder---------------
-                case "BlockFolder": ThrowMatchNoneException(name); break;
+                case "BlockFolder": ThrowMatchNoneException(typeName); break;
                 case "CommentsFolder": featDataTypes.Add(typeof(ICommentFolder)); break;
                 case "CosmeticWeldSubFolder": featDataTypes.Add(typeof(ICosmeticWeldBeadFolder)); break;
                 case "CutListFolder": featDataTypes.Add(typeof(IBodyFolder)); break;
@@ -158,17 +156,17 @@ namespace SldWorksLookup
                 case "TemplateFlatPattern": featDataTypes.Add(typeof(IFlatPatternFolder)); break;
                 
                 //-------------Imported File-------------
-                case "MBimport": throw new InvalidOperationException($"{name}-IImport3DInterconnectData Can not get {nameof(SolidWorks.Interop.sldworks)}")/*featDataTypes.Add(typeof(IImport3DInterconnectData))*/;
+                case "MBimport": throw new InvalidOperationException($"{typeName}-IImport3DInterconnectData Can not get {nameof(SolidWorks.Interop.sldworks)}")/*featDataTypes.Add(typeof(IImport3DInterconnectData))*/;
 
                 //------------Miscellaneous-----------
                 case "Attribute": featDataTypes.Add(typeof(IAttribute)); break;
-                case "BlockDef": ThrowMatchNoneException(name); break;
+                case "BlockDef": ThrowMatchNoneException(typeName); break;
                 case "CurveInFile": featDataTypes.Add(typeof(IFreePointCurveFeatureData)); break;
-                case "GridFeature": ThrowMatchNoneException(name); break;
+                case "GridFeature": ThrowMatchNoneException(typeName); break;
                 case "LibraryFeature": featDataTypes.Add(typeof(ILibraryFeatureData)); break;
                 case "Scale": featDataTypes.Add(typeof(IScaleFeatureData)); break;
                 case "Sensor": featDataTypes.Add(typeof(ISensor)); break;
-                case "ViewBodyFeature": ThrowMatchNoneException(name); break;
+                case "ViewBodyFeature": ThrowMatchNoneException(typeName); break;
 
                 //-----------Mold--------------
                 case "Cavity": featDataTypes.Add(typeof(ICavityFeatureData)); break;
@@ -188,11 +186,11 @@ namespace SldWorksLookup
                 case "AEMRotationalMotor": featDataTypes.Add(typeof(ISimulationMotorFeatureData)); break;
                 case "AEMTorque": featDataTypes.Add(typeof(ISimulationForceFeatureData)); break;
                 case "AEMTorsionalDamper": featDataTypes.Add(typeof(ISimulationDamperFeatureData)); break;
-                case "AEMTorsionalSpring": ThrowMatchNoneException(name); break;
+                case "AEMTorsionalSpring": ThrowMatchNoneException(typeName); break;
                 case "SimPlotFeature": featDataTypes.Add(typeof(IMotionPlotFeatureData)); break;
                 case "SimPlotXAxisFeature": featDataTypes.Add(typeof(IMotionPlotAxisFeatureData)); break;
                 case "SimPlotYAxisFeature": featDataTypes.Add(typeof(IMotionPlotAxisFeatureData)); break;
-                case "SimResultFolder":ThrowMatchNoneException(name); /*featDataTypes.Add(typeof(IMotionStudyResults));*/ break;
+                case "SimResultFolder":ThrowMatchNoneException(typeName); /*featDataTypes.Add(typeof(IMotionStudyResults));*/ break;
 
                 //--------------Reference Geometry--------------
                 case "BoundingBox": featDataTypes.Add(typeof(IBoundingBoxFeatureData)); break;
@@ -217,7 +215,7 @@ namespace SldWorksLookup
                 case "FlatPattern": featDataTypes.Add(typeof(IFlatPatternFeatureData)); break;
                 case "FlattenBends": featDataTypes.Add(typeof(IBendsFeatureData)); break;
                 case "Fold": featDataTypes.Add(typeof(IFoldsFeatureData)); break;
-                case "FormToolInstance": ThrowMatchNoneException(name); break;
+                case "FormToolInstance": ThrowMatchNoneException(typeName); break;
                 case "Hem": featDataTypes.Add(typeof(IHemFeatureData)); break;
                 case "Jog": featDataTypes.Add(typeof(IJogFeatureData)); break;
                 case "LoftedBend": featDataTypes.Add(typeof(ILoftedBendsFeatureData)); break;
@@ -246,7 +244,7 @@ namespace SldWorksLookup
                 case "SketchBlockDef": featDataTypes.Add(typeof(ISketchBlockDefinition)); break;
                 case "SketchBlockInst": featDataTypes.Add(typeof(ISketchBlockInstance)); break;
                 case "SketchBitmap": featDataTypes.Add(typeof(ISketchPicture)); break;
-                case "BlendRefSurface": ThrowMatchNoneException(name); break;
+                case "BlendRefSurface": ThrowMatchNoneException(typeName); break;
                 case "ExtendRefSurface": featDataTypes.Add(typeof(ISurfaceExtendFeatureData)); break;
                 case "ExtruRefSurface": featDataTypes.Add(typeof(ISurfExtrudeFeatureData)); break;
                 case "FillRefSurface": featDataTypes.Add(typeof(IFillSurfaceFeatureData)); break;
@@ -255,14 +253,14 @@ namespace SldWorksLookup
                 case "OffsetRefSuface": featDataTypes.Add(typeof(ISurfaceOffsetFeatureData)); break;
                 case "PlanarSurface": featDataTypes.Add(typeof(ISurfacePlanarFeatureData)); break;
                 case "RadiateRefSurface": featDataTypes.Add(typeof(ISurfaceRadiateFeatureData)); break;
-                case "RefSurface": ThrowMatchNoneException(name); break;
+                case "RefSurface": ThrowMatchNoneException(typeName); break;
                 case "RevolvRefSurf": featDataTypes.Add(typeof(ISurfRevolveFeatureData)); break;
                 case "RuledSrfFromEdge": featDataTypes.Add(typeof(IRuledSurfaceFeatureData)); break;
                 case "SewRefSurface": featDataTypes.Add(typeof(ISurfaceKnitFeatureData)); break;
                 case "SurfCut": featDataTypes.Add(typeof(ISurfaceCutFeatureData)); break;
                 case "SweepRefSurface": featDataTypes.Add(typeof(ISweepFeatureData)); break;
                 case "TrimRefSurface": featDataTypes.Add(typeof(ISurfaceTrimFeatureData)); break;
-                case "UnTrimRefSurf": ThrowMatchNoneException(name); break;
+                case "UnTrimRefSurf": ThrowMatchNoneException(typeName); break;
                 case "Weldment":featDataTypes.Add(typeof(IEndCapFeatureData)); break; 
                 case "Gusset": featDataTypes.Add(typeof(IGussetFeatureData)); break;
                 case "WeldBeadFeat": featDataTypes.Add(typeof(IWeldmentBeadFeatureData)); break;
@@ -270,6 +268,7 @@ namespace SldWorksLookup
                 case "WeldMemberFeat": featDataTypes.Add(typeof(IStructuralMemberFeatureData)); break;
                 case "WeldmentFeature": featDataTypes.Add(typeof(IStructuralMemberFeatureData)); break;
                 case "WeldmentTableFeat": featDataTypes.Add(typeof(IWeldmentCutListFeature)); break;
+                case "Reference": featDataTypes.Add(typeof(IComponent2)); break;
                 default:
                     break;
             }

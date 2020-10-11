@@ -14,20 +14,28 @@ namespace SldWorksLookup.ViewModel
 {
     public class LookupWindowViewModel : ViewModelBase
     {
+        #region Fields
+
         private RelayCommand _exitCommand;
         private ObservableCollection<InstanceTree> _trees = new ObservableCollection<InstanceTree>();
         private InstanceTree _selectedTreeItem;
         private LookupProperties _properties;
         private RelayCommand _runCommand;
         private Visibility _runButtonVisibility;
-        private RelayCommand _childrenCommand;
+
+        #endregion
+
+        /// <summary>
+        /// 负责通知界面关闭或者刷新
+        /// </summary>
+        public event Action<int> ExitOrUpdate;
 
         #region ctor
 
         public LookupWindowViewModel(SwApplication extension)
         {
             SwApplication = extension;
-            var insProperty = new InstanceProperty(SwApplication.Sw, typeof(ISldWorks));
+            var insProperty = InstanceProperty.Create(SwApplication.Sw, typeof(ISldWorks));
             var treeItem = InstanceTree.Create(insProperty);
             Trees.Add(treeItem);
             SelectedTreeItem = treeItem;
@@ -72,9 +80,10 @@ namespace SldWorksLookup.ViewModel
 
         public Visibility RunButtonVisibility { get => _runButtonVisibility; set => Set(ref _runButtonVisibility, value); }
 
-        public event Action<int> ExitOrUpdate;
 
         #endregion
+
+        #region Methods
 
         private void ExitClick()
         {
@@ -119,5 +128,7 @@ namespace SldWorksLookup.ViewModel
             RunButtonVisibility = flag ? Visibility.Visible : Visibility.Collapsed;
             return flag;
         }
+
+        #endregion
     }
 }

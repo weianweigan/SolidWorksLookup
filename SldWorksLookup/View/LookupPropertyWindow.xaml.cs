@@ -82,7 +82,10 @@ namespace SldWorksLookup.View
             }
             else if (messgae == 1)
             {
-                VM.Properties = VM.Properties; 
+                //ReGrid
+                var properties = VM.Properties;
+                VM.Properties = null;
+                VM.Properties = properties;
             }
         }
 
@@ -94,12 +97,17 @@ namespace SldWorksLookup.View
 
                 if (insTree != null)
                 {
-                    if (_worker.IsBusy)
-                    {
-                        MessageBox.Show("Waiting...");
-                        return;
-                    }
-                    _worker.RunWorkerAsync(insTree);
+                    //后台运行不能提高速度，卡顿因为属性过多，控件重绘过程中。
+                    //即使不堵塞UI，也会有卡顿；后台运行还有可能对COM组件产生影响。
+                    //if (_worker.IsBusy)
+                    //{
+                    //    MessageBox.Show("Waiting...");
+                    //    return;
+                    //}
+                    //_worker.RunWorkerAsync(insTree);
+
+                    insTree.ResolveProperties();
+                    VM.SelectedTreeItem = insTree;
                 }
             }
         }

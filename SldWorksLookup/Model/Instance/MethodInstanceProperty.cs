@@ -10,7 +10,7 @@ namespace SldWorksLookup.Model
 
         public MethodInfo MethodInfo { get; protected set; }
 
-        public MethodInstanceProperty(MethodInfo method,object parentInstance):base(parentInstance,typeof(MethodInfo))
+        public MethodInstanceProperty(MethodInfo method,object parentInstance):base(parentInstance,typeof(MethodInfo),false)
         {
             SetMethod(method,parentInstance);
         }

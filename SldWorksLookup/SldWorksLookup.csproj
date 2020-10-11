@@ -103,7 +103,9 @@
   <ItemGroup>
     <Compile Include="AddIn.cs" />
     <Compile Include="Command_e.cs" />
-    <Compile Include="Helper\IFeatureExtension.cs" />
+    <Compile Include="Helper\Extension\IComponentExtension.cs" />
+    <Compile Include="Helper\Extension\IDrawingDocExtension.cs" />
+    <Compile Include="Helper\Extension\IFeatureExtension.cs" />
     <Compile Include="Helper\ObjectMatcherUtil.cs" />
     <Compile Include="Helper\SelectTypeMatcherUtil.cs" />
     <Compile Include="Helper\TypeMatcherUtil.cs">
@@ -111,8 +113,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>TypeMatcherUtil.tt</DependentUpon>
     </Compile>
-    <Compile Include="Helper\TypeNameToDefinition.cs" />
+    <Compile Include="Helper\TypeNameToDefinitionUtil.cs" />
+    <Compile Include="Model\Instance\ICurveInstanceProperty.cs" />
+    <Compile Include="Model\Instance\IEdgeInstanceProperty.cs" />
+    <Compile Include="Model\Instance\IFace2InstanceProperty.cs" />
+    <Compile Include="Model\Instance\IMathTransformInstanceProperty.cs" />
     <Compile Include="Model\Instance\InstanceProperty.cs" />
+    <Compile Include="Model\Instance\ISurfaceInstanceProperty.cs" />
+    <Compile Include="Model\Instance\NotSupportedMember.cs" />
     <Compile Include="Model\Tree\IAssemblyDocInstanceTree.cs" />
     <Compile Include="Model\Tree\IBody2InstanceTree.cs" />
     <Compile Include="Model\Tree\IComponent2InstanceTree.cs" />
@@ -130,7 +138,9 @@
     <Compile Include="Model\Property\LookupProperty.cs" />
     <Compile Include="Model\Property\LookupPropertyDescriptor.cs" />
     <Compile Include="Model\Property\LookupPropertyProperty.cs" />
-    <Compile Include="Model\LookupValue.cs" />
+    <Compile Include="Model\Value\IFace2LookupValue.cs" />
+    <Compile Include="Model\Value\IRefPlaneLookupValue.cs" />
+    <Compile Include="Model\Value\LookupValue.cs" />
     <Compile Include="Model\PropertyClsfi.cs" />
     <Compile Include="Model\Tree\IPartDocInstanceTree.cs" />
     <Compile Include="Model\Tree\ISldWorksInstaceTree.cs" />
@@ -151,6 +161,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\App.config" />
     <None Include="UnInstall.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

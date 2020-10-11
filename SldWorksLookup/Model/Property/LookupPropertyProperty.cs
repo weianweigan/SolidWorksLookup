@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 
 namespace SldWorksLookup.Model
 {
@@ -9,25 +10,46 @@ namespace SldWorksLookup.Model
         {
         }
 
+        [HandleProcessCorruptedStateExceptions]
         public static LookupPropertyProperty Create(PropertyInfo propertyInfo,object instance)
         {
-            if (propertyInfo.Name == "IMaterialPropertyValues")
+            try
             {
-                return null;
+                var value = propertyInfo.GetValue(instance);
+
+                var valueType = propertyInfo.PropertyType;
+
+                if (!propertyInfo.PropertyType.IsValueType && propertyInfo.PropertyType != typeof(string))
+                {
+                    //不是值类型
+                    value = LookupValue.CreatePropertyValue(value, propertyInfo);
+                    valueType = typeof(LookupValue);
+                }
+
+                //值类型
+                return new LookupPropertyProperty(propertyInfo.Name, value, valueType)
+                {
+                    Category = "Property"
+                };
             }
-
-            var value = propertyInfo.GetValue(instance);
-            var valueType = propertyInfo.PropertyType;
-
-            if (!propertyInfo.PropertyType.IsValueType && propertyInfo.PropertyType != typeof(string))
+            catch(AccessViolationException)
             {
-                //不是值类型
-                value = LookupValue.CreatePropertyValue(value, propertyInfo);
-                valueType = typeof(LookupValue);
+                throw;
             }
-            
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 创建一个不求值，只显示消息的属性
+        /// </summary>
+        [HandleProcessCorruptedStateExceptions]
+        public static LookupPropertyProperty CreateMsgOnly(PropertyInfo propertyInfo,string msg)
+        {
             //值类型
-            return new LookupPropertyProperty(propertyInfo.Name, value, valueType)
+            return new LookupPropertyProperty(propertyInfo.Name, msg, typeof(string))
             {
                 Category = "Property"
             };
@@ -35,6 +57,12 @@ namespace SldWorksLookup.Model
 
         public static LookupPropertyProperty CreateReturnProperty(object value,Type type,string name)
         {
+            if (!type.IsValueType && type != typeof(string))
+            {
+                //不是值类型
+                value = LookupValue.CreateValue(value, type);
+                type = typeof(LookupValue);
+            }
             return new LookupPropertyProperty(name, value, type)
             {
                 Category = "Result"

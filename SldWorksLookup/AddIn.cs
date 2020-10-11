@@ -83,7 +83,7 @@ namespace SldWorksLookup
                 return;
             }
             var docWindow = CreatePopupWindow<View.LookupPropertyWindow>();
-            docWindow.Control.MutiInit(new InstanceProperty[] { new InstanceProperty(mdlDoc, typeof(IModelDoc2)) });
+            docWindow.Control.MutiInit(new InstanceProperty[] {  InstanceProperty.Create(mdlDoc, typeof(IModelDoc2)) });
             docWindow.Show();
         }
 
@@ -102,16 +102,25 @@ namespace SldWorksLookup
                 var mark = doc.ISelectionManager.GetSelectedObjectMark(i);
                 var obj = doc.ISelectionManager.GetSelectedObject6(i, mark);
                 var type = (swSelectType_e)doc.ISelectionManager.GetSelectedObjectType3(i, mark);
-                var matchType = SelectTypeMatcherUtil.Match(type);
-                if (matchType != null)
+
+                try
                 {
-                    var insPro = new InstanceProperty(obj, matchType);
-                    ins.Add(insPro);
+                    var matchType = SelectTypeMatcherUtil.Match(type);
+                    if (matchType != null)
+                    {
+                        var insPro = InstanceProperty.Create(obj, matchType);
+                        ins.Add(insPro);
+                    }
+                    else
+                    {
+                        Application.Sw.SendMsgToUser($"{type} Cannot match a SolidWorks Interface");
+                    }
                 }
-                else
+                catch (System.Exception ex)
                 {
-                    Application.Sw.SendMsgToUser($"{type} Cannot match a SolidWorks Interface");
+                    Application.Sw.SendMsgToUser($"{ex.Message},{type} Cannot match a SolidWorks Interface");
                 }
+
             }
             var selPpopWindow = CreatePopupWindow<View.LookupPropertyWindow>();
             selPpopWindow.Control.MutiInit(ins);

@@ -1,14 +1,27 @@
 ﻿using GalaSoft.MvvmLight;
+using SolidWorks.Interop.sldworks;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Windows;
 
 namespace SldWorksLookup.Model
 {
+
     public class InstanceProperty : ObservableObject
     {
+        #region Fields
+
         private LookupProperties _properties;
         private bool _hasInit = false;
+        protected List<NotSupportedMember> _notSupportedMembers = new List<NotSupportedMember>()
+        {
+            //多个接口都包含此属性，但无法被托管代码执行
+            new NotSupportedMember("IMaterialPropertyValues",PropertyClsfi.Property,NOTSUPPORTMEMBER)
+        };
+        protected const string NOTSUPPORTMEMBER = "VBA, VB.NET, C#, and C++/CLI: Not supported";
+
+        #endregion
 
         #region Properties
 
@@ -35,12 +48,12 @@ namespace SldWorksLookup.Model
 
         #region Ctor
 
-        public InstanceProperty()
+        private InstanceProperty()
         {
 
         }
 
-        public InstanceProperty(object instance, Type type,bool init = true)
+        protected InstanceProperty(object instance, Type type,bool init = true)
         {
             if (instance == null || type == null)
             {
@@ -54,6 +67,34 @@ namespace SldWorksLookup.Model
             {
                 SetInstance(instance, type);
             }
+        }
+
+        public static InstanceProperty Create(object instance,Type type,bool init = true)
+        {
+            InstanceProperty instanceProperty;
+            switch (type.Name)
+            {
+                case nameof(IMathTransform):
+                    instanceProperty = new IMathTransformInstanceProperty(instance, type, init);
+                    break;
+                case nameof(ICurve):
+                    instanceProperty = new ICurveInstanceProperty(instance, type, init);
+                    break;
+                case nameof(IEdge):
+                    instanceProperty = new IEdgeInstanceProperty(instance, type, init);
+                    break;
+                case nameof(IFace2):
+                    instanceProperty = new IFace2InstanceProperty(instance, type, init);
+                    break;
+                case nameof(ISurface):
+                    instanceProperty = new ISurfaceInstanceProperty(instance, type, init);
+                    break;
+                default:
+                    instanceProperty = new InstanceProperty(instance, type, init);
+                    break;
+            }
+
+            return instanceProperty;
         }
 
         #endregion
@@ -103,6 +144,7 @@ namespace SldWorksLookup.Model
             if (Properties == null)
             {
                 Properties = new LookupProperties() { Name = name };
+                InitUnSupportedMember();
             }
             else
             {
@@ -114,44 +156,79 @@ namespace SldWorksLookup.Model
         {
             var methods = InstanceType.GetMethods();
 
-            var results = methods.AsParallel().Select(method =>
-            {
-                var result = TryMethodToLookup(method, Instance, out var lookupProperty);
-                return Tuple.Create(result, lookupProperty);
-            }).Where(p => p.Item1).Select(p => p.Item2);
-
-            Properties.Properties.AddRange(results);
-
-            //foreach (var method in methods)
+            //不需要并行，容易产生异常，速度提升不明显
+            //var results = methods.AsParallel().Select(method =>
             //{
-            //    var flag = TryMethodToLookup(method, Instance, out var lookupProperty);
-            //    if (flag)
-            //    {
-            //        Properties.Add(lookupProperty);
-            //    }
-            //}
+            //    var result = TryMethodToLookup(method, Instance, out var lookupProperty);
+            //    return Tuple.Create(result, lookupProperty);
+            //}).Where(p => p.Item1).Select(p => p.Item2);
+
+            //Properties.Properties.AddRange(results);
+
+            foreach (var method in methods)
+            {
+                if (IsMethodSupport(method.Name,out string msg))
+                {
+                    var flag = TryMethodToLookup(method, Instance, out var lookupProperty);
+                    if (flag)
+                    {
+                        Properties.Add(lookupProperty);
+                    }
+                }
+                else
+                {
+                    Properties.Add(LookupMethodProperty.CreateMsgOnly(method, Instance,msg));
+                }
+            }
         }
 
         protected void GetProperties()
         {
-            var properties = InstanceType.GetProperties();
+            var propertyInfos = InstanceType.GetProperties();
 
-            var results = properties.AsParallel().Select(property =>
-            {
-                var result = TryPropertyToLookup(property, Instance, out var lookupProperty);
-                return Tuple.Create(result, lookupProperty);
-            }).Where(p => p.Item1).Select(p => p.Item2);
-
-            Properties.Properties.AddRange(results);
-
-            //foreach (var property in properties)
+            //不需要并行，容易产生异常，速度提升不明显
+            //var results = properties.AsParallel().Select(property =>
             //{
-            //    var flag = TryPropertyToLookup(property, Instance, out var lookupProperty);
-            //    if (flag)
-            //    {
-            //        Properties.Add(lookupProperty);
-            //    }
-            //}
+            //    var result = TryPropertyToLookup(property, Instance, out var lookupProperty);
+            //    return Tuple.Create(result, lookupProperty);
+            //}).Where(p => p.Item1).Select(p => p.Item2);
+
+            //Properties.Properties.AddRange(results);
+
+            foreach (var property in propertyInfos)
+            {
+                if (IsPropertySupport(property.Name,out string msg))
+                {
+                    //带有索引器的属性
+                    if (property.GetMethod.GetParameters().Length > 0)
+                    {
+                        //生成方法
+                        var flag = TryMethodToLookup(property.GetMethod, Instance, out var getLookupProperty);
+                        if (flag)
+                        {
+                            Properties.Add(getLookupProperty);
+                        }
+                        flag = TryMethodToLookup(property.SetMethod, Instance, out var setLookupProperty);
+                        if (flag)
+                        {
+                            Properties.Add(setLookupProperty);
+                        }
+                    }
+                    else//普通属性
+                    {
+                        var flag = TryPropertyToLookup(property, Instance, out var lookupProperty);
+                        if (flag)
+                        {
+                            Properties.Add(lookupProperty);
+                        }
+                    }
+                }
+                else
+                {
+                    //无法Snoop的属性
+                    Properties.Add(LookupPropertyProperty.CreateMsgOnly(property, msg));
+                }
+            }
         }
 
         protected bool TryPropertyToLookup(PropertyInfo propertyInfo, object instance, out LookupProperty lookupProperty)
@@ -161,7 +238,10 @@ namespace SldWorksLookup.Model
             {
                 lookupProperty = LookupPropertyProperty.Create(propertyInfo, instance);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Cannot Get{propertyInfo.PropertyType} -- {ex.Message}");
+            }
             return lookupProperty != null;
         }
 
@@ -181,6 +261,46 @@ namespace SldWorksLookup.Model
             return InstanceType?.Name ?? (Properties?.Name ?? base.ToString());
         }
 
+        /// <summary>
+        /// 判断此实例中某个接口是否指出
+        /// </summary>
+        /// <returns></returns>
+        private bool IsMemberSupport(string memberName, out string msg, PropertyClsfi propertyClsfi)
+        {
+            var member = _notSupportedMembers.Find(p => p.PropertyClsfi == propertyClsfi && p.Name == memberName);
+
+            if (member.IsVaildObject())
+            {
+                msg = member.Msg;
+                return false;
+            }
+            else
+            {
+                msg = string.Empty;
+                return true;
+            }
+        }
+
         #endregion
+
+        #region Virtual Methods
+
+        public virtual bool IsPropertySupport(string propertyName,out string msg)
+        {
+            return IsMemberSupport(propertyName, out msg,PropertyClsfi.Property);
+        }
+
+        public virtual bool IsMethodSupport(string methodName, out string msg)
+        {
+            return IsMemberSupport(methodName, out msg, PropertyClsfi.Method);
+        }
+
+        /// <summary>
+        /// 初始化不支持列表
+        /// </summary>
+        protected virtual void InitUnSupportedMember() { }
+
+        #endregion
+
     }
 }

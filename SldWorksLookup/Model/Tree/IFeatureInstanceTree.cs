@@ -13,18 +13,13 @@ namespace SldWorksLookup.Model
             AddSubFeatureNodes();
 
             NodeStatus = NodeStatus.NeedRun;
-            NodeToolTip = $"{nameof(IFeature.GetDefinition)}";
-        }
-
-        [Obsolete]
-        private void AddBodyNode()
-        {
-            AddNode<IFeature, IBody2>(feat => feat.IGetBody2(), node => $"{node.Name}({nameof(IBody2)})");
+            NodeToolTip = $"{nameof(IFeature.GetDefinition)} && {nameof(IFeature.GetSpecificFeature2)}";
         }
 
         private void AddSubFeatureNodes()
         {
-            AddNodes<IFeature, IFeature>(feat => feat.GetSubFeats().ToArray(),node => $"{node.Name}({nameof(IFeature)})");
+            AddNodes<IFeature, IFeature>(feat => feat.GetSubFeats().ToArray(),
+                node => $"{node.Name}({nameof(IFeature)})");
         }
 
         /// <summary>
@@ -40,12 +35,14 @@ namespace SldWorksLookup.Model
                 {
                     var typeName = feat.GetTypeName2();
 
-                    types = TypeNameToDefinition.Match(typeName);
+                    types = TypeNameToDefinitionUtil.Match(typeName);
 
                     foreach (var type in types)
                     {
-                        AddNode<IFeature>(f => f.GetDefinition(), type, obj => type.Name);
-                        AddNode<IFeature>(f => f.GetSpecificFeature2(), type, obj => type.Name);
+                        AddNode<IFeature>(f => f.GetDefinition(), 
+                            type, _ => $"{type.Name}({typeName})");
+                        AddNode<IFeature>(f => f.GetSpecificFeature2(),
+                            type, _ => $"{type.Name}({typeName})");
                     }
                 }
             }
@@ -54,5 +51,13 @@ namespace SldWorksLookup.Model
                 MessageBox.Show(ex.Message);
             }
         }
+
+        [Obsolete]
+        private void AddBodyNode()
+        {
+            AddNode<IFeature, IBody2>(feat => feat.IGetBody2(),
+                node => $"{node.Name}({nameof(IBody2)})");
+        }
+
     }
 }

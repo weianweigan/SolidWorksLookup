@@ -20,6 +20,15 @@ namespace SldWorksLookup.Model
             };
         }
 
+        public static LookupMethodProperty CreateMsgOnly(MethodInfo methodInfo,object instance, string msg)
+        {
+            var lookupValue = LookupValue.CreateMethodValueMsgOnly(methodInfo, instance,msg);
+            return new LookupMethodProperty(methodInfo.Name, lookupValue, typeof(LookupValue), methodInfo, instance)
+            {
+                Category = "Method"
+            };
+        }
+
         /// <summary>
         /// 方法信息
         /// </summary>
