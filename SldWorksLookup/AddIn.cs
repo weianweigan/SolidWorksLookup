@@ -9,6 +9,9 @@ using SldWorksLookup.Model;
 using SolidWorks.Interop.swconst;
 using System.Diagnostics;
 using SolidWorks.Interop.sldworks;
+using Xarial.XCad.Base.Enums;
+using SldWorksLookup.View;
+using System;
 
 namespace SldWorksLookup
 {
@@ -60,11 +63,33 @@ namespace SldWorksLookup
                     SnoopCurrentSelection();
                     break;
 
+                case Command_e.SnoopPID:
+
+                    SnoopPID();
+                    break;
+
+                case Command_e.GetObjectByPID:
+                    GetObject();
+                    break;
+
                 case Command_e.TestFramework:
 
                     Process.Start(new ProcessStartInfo("https://github.com/weianweigan/SldWorks.TestRunner"));
                     break;
             }
+        }
+
+        private void GetObject()
+        {
+            var doc = Application.Documents.Active;
+            if (doc == null)
+            {
+                Application.ShowMessageBox($"No active doc");
+            }
+            var getObjectVM = new GetObjectByPIDWindowViewModel(doc.Model, this.Application);
+            var window = CreatePopupWindow<GetObjectByPIDWindow>();
+            window.Control.VM = getObjectVM;
+            window.Show();
         }
 
         private void SnoopISldWorks()
@@ -125,6 +150,34 @@ namespace SldWorksLookup
             var selPpopWindow = CreatePopupWindow<View.LookupPropertyWindow>();
             selPpopWindow.Control.MutiInit(ins);
             selPpopWindow.Show();
+        }
+
+        private void SnoopPID()
+        {
+            var doc = Application.Documents.Active?.Model;
+            if (doc == null)
+            {
+                Application.ShowMessageBox("No active doc", MessageBoxIcon_e.Error);
+                return;
+            }
+
+            var count = doc.ISelectionManager.GetSelectedObjectCount();
+
+            List<SelectionPID> pids = new List<SelectionPID>();
+
+            for (int i = 1; i < count + 1; i++)
+            {
+                var mark = doc.ISelectionManager.GetSelectedObjectMark(i);
+                var obj = doc.ISelectionManager.GetSelectedObject6(i, mark);
+                var type = (swSelectType_e)doc.ISelectionManager.GetSelectedObjectType3(i, mark);
+                var pid = doc.Extension.GetPersistReference3(obj);
+
+                pids.Add(SelectionPID.Create(type, obj, mark,pid));
+            }
+
+            var window = CreatePopupWindow<SelectionPIDWindow>();
+            window.Control.VM = new SelectionPIDViewModel(pids,Application);
+            window?.Show();
         }
     }
 }

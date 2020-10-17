@@ -107,6 +107,7 @@
     <Compile Include="Helper\Extension\IDrawingDocExtension.cs" />
     <Compile Include="Helper\Extension\IFeatureExtension.cs" />
     <Compile Include="Helper\ObjectMatcherUtil.cs" />
+    <Compile Include="Helper\PIDComObjectMatcherUtil.cs" />
     <Compile Include="Helper\SelectTypeMatcherUtil.cs" />
     <Compile Include="Helper\TypeMatcherUtil.cs">
       <AutoGen>True</AutoGen>
@@ -121,6 +122,7 @@
     <Compile Include="Model\Instance\InstanceProperty.cs" />
     <Compile Include="Model\Instance\ISurfaceInstanceProperty.cs" />
     <Compile Include="Model\Instance\NotSupportedMember.cs" />
+    <Compile Include="Model\SelectionPID.cs" />
     <Compile Include="Model\Tree\IAssemblyDocInstanceTree.cs" />
     <Compile Include="Model\Tree\IBody2InstanceTree.cs" />
     <Compile Include="Model\Tree\IComponent2InstanceTree.cs" />
@@ -152,8 +154,16 @@
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\LookupWindowViewModel.cs" />
+    <Compile Include="View\GetObjectByPIDWindow.xaml.cs">
+      <DependentUpon>GetObjectByPIDWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\GetObjectByPIDWindowViewModel.cs" />
     <Compile Include="View\LookupPropertyWindow.xaml.cs">
       <DependentUpon>LookupPropertyWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\SelectionPIDViewModel.cs" />
+    <Compile Include="View\SelectionPIDWindow.xaml.cs">
+      <DependentUpon>SelectionPIDWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -170,7 +180,15 @@
     <Folder Include="Converter\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="View\GetObjectByPIDWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\LookupPropertyWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SelectionPIDWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -195,7 +213,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\BrowseData_16x.png" />
+    <Content Include="Resources\Class_32x.png" />
     <Content Include="Resources\Draft.png" />
+    <Content Include="Resources\id.png" />
     <Content Include="Resources\SketchRegion.png" />
     <Content Include="Resources\tasklistpart_40.png" />
     <Content Include="Resources\test-tube_4.png" />

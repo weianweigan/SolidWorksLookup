@@ -20,6 +20,16 @@ namespace SldWorksLookup
         [Icon(typeof(Resource), nameof(Resource.SketchRegion))]
         CurrentSelection,
 
+        [Title("Snoop PID")]
+        [Description("Snoop Persistent Reference IDs")]
+        [Icon(typeof(Resource),nameof(Resource.id))]
+        SnoopPID,
+
+        [Title("GetObjectByPID")]
+        [Description("Get Object By PID")]
+        [Icon(typeof(Resource), nameof(Resource.Class_32x))]
+        GetObjectByPID,
+
         [Title(nameof(TestFramework))]
         [Icon(typeof(Resource), nameof(Resource.test_tube_4))]
         TestFramework

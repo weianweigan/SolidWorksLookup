@@ -1,0 +1,22 @@
+﻿<Window x:Class="SldWorksLookup.View.GetObjectByPIDWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SldWorksLookup.View"
+             mc:Ignorable="d" 
+             Height="350" Width="400" Title="GetObjectByPID" WindowStyle="ToolWindow">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <DockPanel LastChildFill="True">
+            <TextBlock DockPanel.Dock="Top" Text="Input PID:" FontWeight="Black" FontSize="20" Margin="20,10"/>
+            <TextBox Margin="15,4" Text="{Binding PID,UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"/>
+        </DockPanel>
+        <Grid Grid.Row="1">
+            <Button Width="75" Command="{Binding GetObjectCommand}" Height="25" HorizontalAlignment="Right" Margin="0,0,15,0">Ok</Button>
+        </Grid>
+    </Grid>
+</Window>
