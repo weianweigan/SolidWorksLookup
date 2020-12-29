@@ -141,6 +141,7 @@
     <Compile Include="Model\Instance\IFace2InstanceProperty.cs" />
     <Compile Include="Model\Instance\IMathTransformInstanceProperty.cs" />
     <Compile Include="Model\Instance\InstanceProperty.cs" />
+    <Compile Include="Model\Instance\ISketchInstanceProperty.cs" />
     <Compile Include="Model\Instance\ISurfaceInstanceProperty.cs" />
     <Compile Include="Model\Instance\NotSupportedMember.cs" />
     <Compile Include="Model\SelectionPID.cs" />

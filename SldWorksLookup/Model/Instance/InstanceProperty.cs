@@ -69,6 +69,13 @@ namespace SldWorksLookup.Model
             }
         }
 
+        /// <summary>
+        /// 创建描述此类型的实例对象
+        /// </summary>
+        /// <param name="instance">实例</param>
+        /// <param name="type">类型</param>
+        /// <param name="init">是否初始化</param>
+        /// <returns><see cref="InstanceProperty"/>类型</returns>
         public static InstanceProperty Create(object instance,Type type,bool init = true)
         {
             InstanceProperty instanceProperty;
@@ -88,6 +95,9 @@ namespace SldWorksLookup.Model
                     break;
                 case nameof(ISurface):
                     instanceProperty = new ISurfaceInstanceProperty(instance, type, init);
+                    break;
+                case nameof(ISketch):
+                    instanceProperty = new ISketchInstanceProperty(instance, type, init);
                     break;
                 default:
                     instanceProperty = new InstanceProperty(instance, type, init);

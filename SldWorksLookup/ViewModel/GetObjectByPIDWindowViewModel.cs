@@ -35,26 +35,33 @@ namespace SldWorksLookup.View
 
         private void GetObjectClick()
         {
-            var byteId = Convert.FromBase64String(PID);
-            var obj = _doc.Extension.GetObjectByPersistReference3(byteId, out int errorCode);
-            var errorCodeEnum = (swPersistReferencedObjectStates_e)errorCode;
-            if (obj == null)
+            try
             {
-                _application.ShowMessageBox($"Cannot get object by PID, {errorCodeEnum.ToString()}");
-            }
-            else
-            {
-                var matchtype = PIDComObjectMatcherUtil.Match(obj);
-                if (matchtype != null)
+                var byteId = Convert.FromBase64String(PID);
+                var obj = _doc.Extension.GetObjectByPersistReference3(byteId, out int errorCode);
+                var errorCodeEnum = (swPersistReferencedObjectStates_e)errorCode;
+                if (obj == null)
                 {
-                    var insPro = InstanceProperty.Create(obj, matchtype);
-                    var window = new LookupPropertyWindow(insPro);
-                    window.Show();
+                    _application.ShowMessageBox($"Cannot get object by PID, {errorCodeEnum.ToString()}");
                 }
                 else
                 {
-                    _application.ShowMessageBox($"{obj.GetType().FullName} cannot get a type, {errorCodeEnum.ToString()}");
+                    var matchtype = PIDComObjectMatcherUtil.Match(obj);
+                    if (matchtype != null)
+                    {
+                        var insPro = InstanceProperty.Create(obj, matchtype);
+                        var window = new LookupPropertyWindow(insPro);
+                        window.Show();
+                    }
+                    else
+                    {
+                        _application.ShowMessageBox($"{obj.GetType().FullName} cannot get a type, {errorCodeEnum.ToString()}");
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                _application.ShowMessageBox(ex.Message);
             }
         }
 

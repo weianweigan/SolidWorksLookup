@@ -81,12 +81,12 @@ namespace SldWorksLookup
 
         private void GetObject()
         {
-            var doc = Application.Documents.Active;
+            var doc = Application.Sw.IActiveDoc2;
             if (doc == null)
             {
                 Application.ShowMessageBox($"No active doc");
             }
-            var getObjectVM = new GetObjectByPIDWindowViewModel(doc.Model, this.Application);
+            var getObjectVM = new GetObjectByPIDWindowViewModel(doc, this.Application);
             var window = CreatePopupWindow<GetObjectByPIDWindow>();
             window.Control.VM = getObjectVM;
             window.Show();

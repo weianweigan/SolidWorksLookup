@@ -89,7 +89,7 @@ namespace SldWorksLookup
                 case "LocalSketchPattern": featDataTypes.Add(typeof(ILocalSketchPatternFeatureData)); break;
                 case "LPattern": featDataTypes.Add(typeof(ILinearPatternFeatureData)); break;
                 case "MacroFeature": featDataTypes.Add(typeof(IMacroFeatureData)); break;
-                case "MirrorCompFeat": throw new InvalidOperationException("IMirrorComponentFeatureData Can not Get in SolidWorks.Interop.SldWorks")/*featDataTypes.Add(typeof(IMirrorComponentFeatureData))*/; break;
+                case "MirrorCompFeat": throw new InvalidOperationException("IMirrorComponentFeatureData Can not Get in SolidWorks.Interop.SldWorks")/*featDataTypes.Add(typeof(IMirrorComponentFeatureData)); break;*/; 
                 case "MirrorPattern": featDataTypes.Add(typeof(IMirrorPatternFeatureData)); break;
                 case "MirrorSolid": featDataTypes.Add(typeof(IMirrorSolidFeatureData)); break;
                 case "MirrorStock": featDataTypes.Add(typeof(IMirrorPartFeatureData)); break;
