@@ -30,6 +30,16 @@ namespace SldWorksLookup
         [Icon(typeof(Resource), nameof(Resource.Class_32x))]
         GetObjectByPID,
 
+        [Title("CaptureCmd")]
+        [Description("Capture SolidWorks Commands")]
+        [Icon(typeof(Resource),nameof(Resource.Buttons))]
+        CaptureCmd,
+
+        [Title("ColorToInt")]
+        [Description("Select a color to get a int value")]
+        [Icon(typeof(Resource),nameof(Resource.color_palette))]
+        ColorToInt,
+
         [Title(nameof(TestFramework))]
         [Icon(typeof(Resource), nameof(Resource.test_tube_4))]
         TestFramework

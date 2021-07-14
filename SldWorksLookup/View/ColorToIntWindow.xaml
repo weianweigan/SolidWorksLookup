@@ -1,0 +1,24 @@
+﻿<Window x:Class="SldWorksLookup.View.ColorToIntWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        mc:Ignorable="d" 
+        xmlns:local="clr-namespace:SldWorksLookup.View"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
+        xmlns:viewmodel="clr-namespace:SldWorksLookup.ViewModel" 
+        d:DataContext="{d:DesignInstance Type=viewmodel:ColorToIntWindowViewModel}"
+        Height="120" Width="260"
+        ShowInTaskbar="False"
+        Title="ColorToInt">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <xctk:ColorPicker Margin="5,0" SelectedColor="{Binding SelectedColor}"/>
+        <GroupBox Header="Result" Grid.Row="1" Margin="5">
+            <TextBox Text="{Binding Result}"/>
+        </GroupBox>
+    </Grid>
+</Window>

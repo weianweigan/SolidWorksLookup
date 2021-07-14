@@ -17,7 +17,7 @@ namespace SldWorksLookup
 {
     [ComVisible(true)]
     [Title("SolidWorks Lookup")]
-    [Description("Lookup SolidWorks Objects 0.0.1")]
+    [Description("Lookup SolidWorks Objects 0.0.3")]
     [Icon(typeof(Resource),nameof(Resource.BrowseData_16x))]
     public class AddIn:SwAddInEx
     {
@@ -72,11 +72,31 @@ namespace SldWorksLookup
                     GetObject();
                     break;
 
+                case Command_e.CaptureCmd:
+                    ShowCaptureWindow();
+                    break;
+
+                case Command_e.ColorToInt:
+                    ShowColorWindow();
+                    break;
+
                 case Command_e.TestFramework:
 
                     Process.Start(new ProcessStartInfo("https://github.com/weianweigan/SldWorks.TestRunner"));
                     break;
             }
+        }
+
+        private void ShowColorWindow()
+        {
+            var window = CreatePopupWindow<ColorToIntWindow>();
+            window?.Show();
+        }
+
+        private void ShowCaptureWindow()
+        {
+            var window = new CaptureCmd(Application);
+            window?.Show();
         }
 
         private void GetObject()

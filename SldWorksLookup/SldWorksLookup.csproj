@@ -66,11 +66,16 @@
     <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.4.1.0, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="SolidWorks.Interop.sldworks, Version=27.1.0.72, Culture=neutral, PublicKeyToken=7c4797c3e4eeac03, processorArchitecture=MSIL">
       <HintPath>..\packages\Xarial.XCad.SolidWorks.Interops.0.2.0\lib\net40\SolidWorks.Interop.sldworks.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="SolidWorks.Interop.swcommands">
+      <HintPath>..\references\SolidWorks.Interop.swcommands.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swconst, Version=27.1.0.72, Culture=neutral, PublicKeyToken=19f43e188e4269d8, processorArchitecture=MSIL">
       <HintPath>..\packages\Xarial.XCad.SolidWorks.Interops.0.2.0\lib\net40\SolidWorks.Interop.swconst.dll</HintPath>
@@ -175,7 +180,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\CaptureCmdViewModel.cs" />
+    <Compile Include="ViewModel\ColorToIntWindowViewModel.cs" />
     <Compile Include="ViewModel\LookupWindowViewModel.cs" />
+    <Compile Include="Model\SwCommand.cs" />
+    <Compile Include="View\CaptureCmd.xaml.cs">
+      <DependentUpon>CaptureCmd.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ColorToIntWindow.xaml.cs">
+      <DependentUpon>ColorToIntWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\GetObjectByPIDWindow.xaml.cs">
       <DependentUpon>GetObjectByPIDWindow.xaml</DependentUpon>
     </Compile>
@@ -202,6 +216,14 @@
     <Folder Include="Converter\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="View\CaptureCmd.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ColorToIntWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\GetObjectByPIDWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -235,7 +257,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\BrowseData_16x.png" />
+    <Content Include="Resources\Buttons.png" />
     <Content Include="Resources\Class_32x.png" />
+    <Content Include="Resources\color-palette.png" />
     <Content Include="Resources\Draft.png" />
     <Content Include="Resources\id.png" />
     <Content Include="Resources\SketchRegion.png" />

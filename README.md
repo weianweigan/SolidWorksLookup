@@ -50,6 +50,24 @@ Click *.bat file to Install or UnInstall.
     <img width="600" src=".\resources\invokemethod.png">
 </div>
 
+# Backers
+
+
+
+# Packages
+
+### XCAD
+
+https://github.com/xarial/xcad/
+
+### wpftoolkit
+
+https://github.com/xceedsoftware/wpftoolkit
+
+### MVVMLight
+
+https://github.com/lbugnion/mvvmlight
+
 # License
 
 [License](https://github.com/weianweigan/SolidWorksLookup/blob/master/LICENSE)

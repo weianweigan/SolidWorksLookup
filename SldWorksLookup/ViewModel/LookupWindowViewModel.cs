@@ -1,7 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using SldWorksLookup.Model;
-using SldWorksLookup.View;
 using SolidWorks.Interop.sldworks;
 using System;
 using System.Collections.Generic;
@@ -22,6 +21,8 @@ namespace SldWorksLookup.ViewModel
         private LookupProperties _properties;
         private RelayCommand _runCommand;
         private Visibility _runButtonVisibility;
+        private object selectedProperty;
+        private RelayCommand _helpNavigateCommand;
 
         #endregion
 
@@ -66,6 +67,8 @@ namespace SldWorksLookup.ViewModel
 
         public RelayCommand RunCommand { get => _runCommand ?? (_runCommand = new RelayCommand(RunClick, CanRunClick)); set => _runCommand = value; }
 
+        public RelayCommand HelpNavigateCommand { get => _helpNavigateCommand ?? (_helpNavigateCommand = new RelayCommand(HelpNavigate,CanHelpNavigate)); set => _helpNavigateCommand = value; }
+
         public ObservableCollection<InstanceTree> Trees { get => _trees; set => Set(ref _trees, value); }
 
         public InstanceTree SelectedTreeItem
@@ -80,6 +83,14 @@ namespace SldWorksLookup.ViewModel
 
         public Visibility RunButtonVisibility { get => _runButtonVisibility; set => Set(ref _runButtonVisibility, value); }
 
+        public object SelectedProperty
+        {
+            get => selectedProperty; set
+            {
+                Set(ref selectedProperty, value);
+                HelpNavigateCommand.RaiseCanExecuteChanged();
+            }
+        }
 
         #endregion
 
@@ -127,6 +138,16 @@ namespace SldWorksLookup.ViewModel
 
             RunButtonVisibility = flag ? Visibility.Visible : Visibility.Collapsed;
             return flag;
+        }
+
+        private bool CanHelpNavigate()
+        {
+            return false;
+        }
+
+        private void HelpNavigate()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

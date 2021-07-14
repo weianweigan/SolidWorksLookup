@@ -14,9 +14,9 @@
     <ROW Property="ARPCOMMENTS" Value="此安装数据库包含了安装 [|ProductName] 所需的逻辑和数据." ValueLocId="*"/>
     <ROW Property="ARPNOREPAIR" MultiBuildValue="DefaultBuild:1"/>
     <ROW Property="ARPURLINFOABOUT" Value="https://github.com/weianweigan/SolidWorksLookup"/>
-    <ROW Property="Manufacturer" Value="dududu"/>
+    <ROW Property="Manufacturer" Value="SolidWorksLookup"/>
     <ROW Property="ProductCode" Value="1033:{7827C630-1197-4B6D-BDF5-B4D23D425CCB} 2052:{7827C630-1197-4B6D-BDF5-B4D23D425CCB} " Type="16"/>
-    <ROW Property="ProductLanguage" Value="1033"/>
+    <ROW Property="ProductLanguage" Value="2052"/>
     <ROW Property="ProductName" Value="SolidWorksLookup"/>
     <ROW Property="ProductVersion" Value="0.0.2.0" Type="32" TargetFile="SldWorksLookup.dll"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
