@@ -80,6 +80,26 @@ namespace SldWorksLookup
                     ShowColorWindow();
                     break;
 
+                case Command_e.SketchPathSplit:
+                    {
+                        var doc = Application.Sw.IActiveDoc2;
+                        if (doc != null)
+                        {
+                            var window = new PathSplit.PathSplitWindow(doc, Application.WindowHandle);
+                            window.Show();
+                        }
+                        else
+                            Application.ShowMessageBox("未打开文档");
+
+                    }
+                    break;
+
+                case Command_e.AddinManager:
+
+                    Application.ShowMessageBox("开发中");
+
+                    break;
+
                 case Command_e.TestFramework:
 
                     Process.Start(new ProcessStartInfo("https://github.com/weianweigan/SldWorks.TestRunner"));

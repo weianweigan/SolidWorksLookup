@@ -40,6 +40,16 @@ namespace SldWorksLookup
         [Icon(typeof(Resource),nameof(Resource.color_palette))]
         ColorToInt,
 
+        [Title("SketchPathSplit")]
+        [Description("Split a SketchPath to points")]
+        [Icon(typeof(Resource), nameof(Resource.lnc_path))]
+        SketchPathSplit,
+
+        [Title("AddinManager")]
+        [Description("Manager your SolidWorks Addin")]
+        [Icon(typeof(Resource),nameof(Resource.addinmanager))]
+        AddinManager,
+
         [Title(nameof(TestFramework))]
         [Icon(typeof(Resource), nameof(Resource.test_tube_4))]
         TestFramework

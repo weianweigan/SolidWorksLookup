@@ -1,4 +1,9 @@
-﻿using SolidWorks.Interop.sldworks;
+﻿/*
+ * Modified By WeiGan 2021.7.14
+ * 添加实体线中点类型的转换
+ */
+
+using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 using System;
 
@@ -130,7 +135,9 @@ namespace SldWorksLookup
                     type = typeof(IDatumTargetSym);
                     break;
                 case swSelectType_e.swSelPOINTREFS:
-                    throw new InvalidOperationException("Not Supported");
+                    type = typeof(IEdgePoint);
+                    break;
+                    //throw new InvalidOperationException("Not Supported");
                 case swSelectType_e.swSelDCABINETS:
                     throw new InvalidOperationException("Not Supported"); ;
                 case swSelectType_e.swSelEXPLVIEWS:

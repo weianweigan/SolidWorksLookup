@@ -63,6 +63,16 @@ namespace SldWorksLookup.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap addinmanager {
+            get {
+                object obj = ResourceManager.GetObject("addinmanager", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap BrowseData_16x {
             get {
                 object obj = ResourceManager.GetObject("BrowseData_16x", resourceCulture);
@@ -116,6 +126,16 @@ namespace SldWorksLookup.Properties {
         internal static System.Drawing.Bitmap id {
             get {
                 object obj = ResourceManager.GetObject("id", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap lnc_path {
+            get {
+                object obj = ResourceManager.GetObject("lnc_path", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

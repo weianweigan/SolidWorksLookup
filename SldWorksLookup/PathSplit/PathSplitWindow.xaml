@@ -1,0 +1,54 @@
+﻿<Window x:Class="SldWorksLookup.PathSplit.PathSplitWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             xmlns:local="clr-namespace:SldWorksLookup.PathSplit" 
+             d:DataContext="{d:DesignInstance Type=local:PathSplitWindowViewModel}"
+             Height="300" Width="600">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="7*"/>
+        </Grid.ColumnDefinitions>
+        <ListBox ItemsSource="{Binding Sketchs}"
+                 SelectedItem="{Binding SelectedSketch}"/>
+
+        <ListBox Grid.Column="1"
+                 ItemsSource="{Binding SketchChains}"
+                 SelectedItem="{Binding SelectedSketchChain}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Height="50">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Name}" 
+                                   FontSize="15"
+                                   VerticalAlignment="Center" 
+                                   FontWeight="Black"/>
+                        <TextBlock Text="{Binding Length}"
+                                   VerticalAlignment="Center"
+                                   Grid.Row="1"/>
+                        <TextBlock Text="步长:" Grid.Column="1" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Margin="30,2,0,2" 
+                                 Text="{Binding StepLength,UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button Grid.Column="1" Grid.Row="1"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Width="75" Height="23" 
+                                Content="导出"
+                                Command="{Binding ExportCommand}"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+    </Grid>
+</Window>

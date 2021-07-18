@@ -133,6 +133,7 @@
     <Compile Include="Helper\Extension\IDrawingDocExtension.cs" />
     <Compile Include="Helper\Extension\IFeatureExtension.cs" />
     <Compile Include="Helper\ObjectMatcherUtil.cs" />
+    <Compile Include="Helper\PathExportUtil.cs" />
     <Compile Include="Helper\PIDComObjectMatcherUtil.cs" />
     <Compile Include="Helper\SelectTypeMatcherUtil.cs" />
     <Compile Include="Helper\TypeMatcherUtil.cs">
@@ -174,16 +175,30 @@
     <Compile Include="Model\Tree\IPartDocInstanceTree.cs" />
     <Compile Include="Model\Tree\ISldWorksInstaceTree.cs" />
     <Compile Include="Model\Tree\NodeStatus.cs" />
+    <Compile Include="PathSplit\ExtensionMethods.cs" />
+    <Compile Include="PathSplit\IMathTransformExtension.cs" />
+    <Compile Include="PathSplit\ModelPathsSolver.cs" />
+    <Compile Include="PathSplit\PathSplitWindow.xaml.cs">
+      <DependentUpon>PathSplitWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PathSplit\PathSplitWindowViewModel.cs" />
+    <Compile Include="PathSplit\SketchChain.cs" />
+    <Compile Include="PathSplit\SketchSegmentWrapper.cs" />
+    <Compile Include="PathSplit\SketchWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\AddinManagerWindowViewModel.cs" />
     <Compile Include="ViewModel\CaptureCmdViewModel.cs" />
     <Compile Include="ViewModel\ColorToIntWindowViewModel.cs" />
     <Compile Include="ViewModel\LookupWindowViewModel.cs" />
     <Compile Include="Model\SwCommand.cs" />
+    <Compile Include="View\AddinManagerWindow.xaml.cs">
+      <DependentUpon>AddinManagerWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\CaptureCmd.xaml.cs">
       <DependentUpon>CaptureCmd.xaml</DependentUpon>
     </Compile>
@@ -216,6 +231,14 @@
     <Folder Include="Converter\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="PathSplit\PathSplitWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AddinManagerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\CaptureCmd.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -256,12 +279,14 @@
     <Content Include="RegAsm.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\addinmanager.png" />
     <Content Include="Resources\BrowseData_16x.png" />
     <Content Include="Resources\Buttons.png" />
     <Content Include="Resources\Class_32x.png" />
     <Content Include="Resources\color-palette.png" />
     <Content Include="Resources\Draft.png" />
     <Content Include="Resources\id.png" />
+    <Content Include="Resources\lnc-path.png" />
     <Content Include="Resources\SketchRegion.png" />
     <Content Include="Resources\tasklistpart_40.png" />
     <Content Include="Resources\test-tube_4.png" />
