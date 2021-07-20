@@ -16,13 +16,15 @@ namespace SldWorksLookup.PathSplit
         #region Fields
         private RelayCommand _exportCommand;
         private readonly ISketch _sketch;
+        private readonly IComponent2 _comp;
         #endregion
 
         #region Ctor
-        public SketchChain(ISketch sketch,List<SketchSegmentWrapper> segs)
+        public SketchChain(ISketch sketch,List<SketchSegmentWrapper> segs,IComponent2 comp = null)
         {
             _sketch = sketch;
             Segs = segs;
+            _comp = comp;
         }
         #endregion
 
@@ -88,6 +90,13 @@ namespace SldWorksLookup.PathSplit
                 points = points.Select(p => trans.Transform(p)).ToList();
             }
 
+            //从零件空间变换到装配体空间
+            if (_comp != null)
+            {
+                var trans = _comp.Transform2.ToGeneralTransform3D();
+                points = points.Select(p => trans.Transform(p)).ToList();
+            }
+
             return points;
         }
 
@@ -113,7 +122,7 @@ namespace SldWorksLookup.PathSplit
         /// <summary>
         /// 用户点击导出按钮执行的方法
         /// </summary>
-        private void ExportClick()
+        public void ExportClick()
         {
             //获取点
             var points = Split(StepLength);

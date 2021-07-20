@@ -9,12 +9,21 @@ namespace SldWorksLookup.PathSplit
         #region Fields
         private readonly ISketch _sketch;
         private IFeature _feat;
+        private readonly IComponent2 _comp;
         #endregion
 
         #region Ctor
+
         public SketchWrapper(IFeature feat)
         {
             _feat = feat;
+            _sketch = _feat.GetSpecificFeature2() as ISketch;
+        }
+
+        public SketchWrapper(IFeature feat, IComponent2 comp)
+        {
+            _feat = feat;
+            _comp = comp;
             _sketch = _feat.GetSpecificFeature2() as ISketch;
         }
         #endregion
@@ -79,14 +88,14 @@ namespace SldWorksLookup.PathSplit
                     i = 0;
 
                     //返回草图链条
-                    yield return new SketchChain(_sketch,chainSes);
+                    yield return new SketchChain(_sketch,chainSes,_comp);
                 }
             }
         }
 
         public override string ToString()
         {
-            return _feat?.Name ?? base.ToString();
+            return (_feat?.Name + _comp?.Name2 )?? base.ToString();
         }
         #endregion
 

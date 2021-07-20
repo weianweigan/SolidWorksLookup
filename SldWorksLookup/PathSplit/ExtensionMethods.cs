@@ -22,6 +22,36 @@ namespace SldWorksLookup.PathSplit
             return new Point3D(skePoint.X, skePoint.Y, skePoint.Z);
         }
 
+        public static IEnumerable<Tuple<IFeature,IComponent2>> GetSkeFeats(this IAssemblyDoc doc)
+        {
+            var comps = (doc.GetComponents(false) as object[]).Cast<Component2>();
+
+            var skeFeats = comps.SelectMany(p => p.GetSkeFeat());
+
+            return skeFeats;
+        }
+
+        public static IEnumerable<Tuple<IFeature,IComponent2>> GetSkeFeat(this IComponent2 comp)
+        {
+            var feat = comp.FirstFeature() as IFeature;
+            while (feat != null)
+            {
+                var subFeats = feat.GetSubFeats();
+                foreach (var subfeat in subFeats)
+                {
+                    if (feat.GetTypeName2() == "ProfileFeature")
+                    {
+                        yield return new Tuple<IFeature, IComponent2>(feat,comp);
+                    }
+                }
+                if (feat.GetTypeName2() == "ProfileFeature")
+                {
+                    yield return new Tuple<IFeature, IComponent2>(feat,comp);
+                }
+                feat = feat.GetNextFeature() as IFeature;
+            }
+        }
+
         public static bool ValueEqual(this Point3D point,Point3D anthoer)
         {
             return Math.Abs(point.X - anthoer.X) < Eplision &&
