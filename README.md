@@ -10,11 +10,11 @@ Interactive SolidWorks API exploration tool to view and navigate SolidWorks obje
 
 [DownLoad](https://github.com/weianweigan/SolidWorksLookup/releases)
 
-Click *.bat file to Install or UnInstall.
+Double click [SolidWorksLookup.0.0.2.exe](https://github.com/weianweigan/SolidWorksLookup/releases/download/0.0.2/SolidWorksLookup.0.0.2.exe) to install.
 
-<div>
+<!--div>
     <img height="300" src=".\resources\Install.png">
-</div>
+</div-->
 
 # Snoop Command
 
