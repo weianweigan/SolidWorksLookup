@@ -12,6 +12,7 @@ using SolidWorks.Interop.sldworks;
 using Xarial.XCad.Base.Enums;
 using SldWorksLookup.View;
 using System;
+using System.Linq;
 
 namespace SldWorksLookup
 {
@@ -68,6 +69,10 @@ namespace SldWorksLookup
                     SnoopPID();
                     break;
 
+                case Command_e.SnoopAdvancedHole:
+                    SnoopAdvancedHole();
+                    break;
+
                 case Command_e.GetObjectByPID:
                     GetObject();
                     break;
@@ -86,16 +91,16 @@ namespace SldWorksLookup
                         if (doc != null)
                         {
                             //批量导出
-                            //{
-                            //    var pathSolver = new PathSplit.ModelPathsSolver(doc);
-                            //    pathSolver.Export();
-                            //}
+                            {
+                                var pathSolver = new PathSplit.ModelPathsSolver(doc);
+                                pathSolver.Export();
+                            }
 
                             //使用UI导出
-                            {
-                                var window = new PathSplit.PathSplitWindow(doc, Application.WindowHandle);
-                                window.Show();
-                            }
+                            //{
+                            //    var window = new PathSplit.PathSplitWindow(doc, Application.WindowHandle);
+                            //    window.Show();
+                            //}
                         }
                         else
                             Application.ShowMessageBox("未打开文档");
@@ -103,17 +108,85 @@ namespace SldWorksLookup
                     } 
                     break;
 
-                case Command_e.AddinManager:
+                //case Command_e.AddinManager:
 
-                    Application.ShowMessageBox("开发中");
+                    //Application.ShowMessageBox("开发中");
 
-                    break;
+                    //break;
 
                 case Command_e.TestFramework:
 
                     Process.Start(new ProcessStartInfo("https://github.com/weianweigan/SldWorks.TestRunner"));
                     break;
             }
+        }
+
+        private void SnoopAdvancedHole()
+        {
+            var doc = this.Application.Sw.IActiveDoc2;
+            if (doc == null)
+            {
+                Application.Sw.SendMsgToUser("No ActiveDoc");
+                return;
+            }
+            var count = doc.ISelectionManager.GetSelectedObjectCount();
+            var ins = new List<InstanceProperty>();
+
+            var mark = doc.ISelectionManager.GetSelectedObjectMark(1);
+            var obj = doc.ISelectionManager.GetSelectedObject6(1, mark);
+            var type = (swSelectType_e)doc.ISelectionManager.GetSelectedObjectType3(1, mark);
+
+            if (type != swSelectType_e.swSelBODYFEATURES)
+            {
+                Application.ShowMessageBox("Please a advancedhole feature");
+                return;
+            }
+
+            var feat = obj as IFeature;
+
+            if (feat == null || feat.GetTypeName2() != "AdvHoleWzd")
+            {
+                Application.ShowMessageBox("Please a advancedhole feature");
+                return;
+            }
+
+            try
+            {
+                var featData = feat.GetDefinition() as IAdvancedHoleFeatureData;
+
+                featData.AccessSelections(doc, null);
+
+                var elems =(featData.GetNearSideElements() as object[]).Cast<IAdvancedHoleElementData>().ToList();
+
+                var types = new List<Type>() {
+                    typeof(ICounterboreElementData),
+                    typeof(ICountersinkElementData),
+                    typeof(IStraightElementData),
+                    typeof(IStraightTapElementData ),
+                    typeof(ITaperedTapElementData)};
+
+                foreach (var ele in elems)
+                {
+                    var matchtype = types.FirstOrDefault(p => p.IsInstanceOfType(ele));
+
+                    ins.Add(InstanceProperty.Create(ele,matchtype ?? typeof(IAdvancedHoleElementData)));
+                }
+                ins.Add(InstanceProperty.Create("Base Type", typeof(string)));
+                foreach (var ele in elems)
+                {
+                    ins.Add(InstanceProperty.Create(ele,typeof(IAdvancedHoleElementData)));
+                }
+
+                featData.ReleaseSelectionAccess();
+            }
+            catch (System.Exception ex)
+            {
+                Application.Sw.SendMsgToUser($"{ex.Message},{type} Cannot match a SolidWorks Interface");
+            }
+
+            var selPpopWindow = CreatePopupWindow<View.LookupPropertyWindow>();
+            selPpopWindow.Control.MutiInit(ins);
+            selPpopWindow.Show();
         }
 
         private void ShowColorWindow()

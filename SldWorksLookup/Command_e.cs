@@ -25,6 +25,11 @@ namespace SldWorksLookup
         [Icon(typeof(Resource),nameof(Resource.id))]
         SnoopPID,
 
+        [Title("Snoop AdvancedHole")]
+        [Description("Snoop AdvancedHole")]
+        [Icon(typeof(Resource),nameof(Resource.port))]
+        SnoopAdvancedHole,
+
         [Title("GetObjectByPID")]
         [Description("Get Object By PID")]
         [Icon(typeof(Resource), nameof(Resource.Class_32x))]
@@ -45,10 +50,10 @@ namespace SldWorksLookup
         [Icon(typeof(Resource), nameof(Resource.lnc_path))]
         SketchPathSplit,
 
-        [Title("AddinManager")]
-        [Description("Manager your SolidWorks Addin")]
-        [Icon(typeof(Resource),nameof(Resource.addinmanager))]
-        AddinManager,
+        //[Title("AddinManager")]
+        //[Description("Manager your SolidWorks Addin")]
+        //[Icon(typeof(Resource),nameof(Resource.addinmanager))]
+        //AddinManager,
 
         [Title(nameof(TestFramework))]
         [Icon(typeof(Resource), nameof(Resource.test_tube_4))]

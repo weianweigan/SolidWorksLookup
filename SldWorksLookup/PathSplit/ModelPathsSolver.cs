@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Media3D;
 
 namespace SldWorksLookup.PathSplit
 {
@@ -46,12 +47,16 @@ namespace SldWorksLookup.PathSplit
         {
             var sketchWappers = GetSketchWrappers();
 
+            List<Point3D> points = new List<Point3D>();
+
             foreach (var skeWrapper in sketchWappers)
             {
                 var chain = skeWrapper.GetChains().FirstOrDefault();
-
-                chain?.ExportClick();
+                var chainPoints = chain.Split(0.0002);
+                points.AddRange(chainPoints);
             }
+
+            //TODO 保存
         }
     }
 }

@@ -143,6 +143,16 @@ namespace SldWorksLookup.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap port {
+            get {
+                object obj = ResourceManager.GetObject("port", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap SketchRegion {
             get {
                 object obj = ResourceManager.GetObject("SketchRegion", resourceCulture);
