@@ -10,13 +10,6 @@ namespace SldWorksLookup
         public static Type Match(Type sourceType)
         {
             var name = sourceType.Name.Split('.').Last();
-
-            //处理包含 [Type]Class的情况 例如 MathTransformClass
-            if (name.EndsWith("Class"))
-            {
-                name = name.Remove(name.Length - 5, 5);
-            }
-
             var hasValue = SolidWorksTypes.FirstOrDefault(p => p.Item1 == name);
             return hasValue != null ? hasValue.Item2: sourceType;
         }

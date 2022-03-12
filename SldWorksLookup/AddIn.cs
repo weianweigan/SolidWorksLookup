@@ -13,6 +13,9 @@ using Xarial.XCad.Base.Enums;
 using SldWorksLookup.View;
 using System;
 using System.Linq;
+using System.Windows.Interop;
+using System.Reflection;
+using System.IO;
 
 namespace SldWorksLookup
 {
@@ -24,9 +27,41 @@ namespace SldWorksLookup
     {
         public override void OnConnect()
         {
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
             var cmdGroup = CommandManager.AddCommandGroup<Command_e>();
             cmdGroup.CommandClick += CmdGroup_CommandClick;
             //cmdGroup.CommandStateResolve += CmdGroup_CommandStateResolve;
+        }
+
+        public string BaseDir { get; } = Path.GetDirectoryName(typeof(AddIn).Assembly.Location);
+
+        private System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            var assemblyPath = string.Empty;
+            var assemblyName = new AssemblyName(args.Name).Name + ".dll";
+
+            try
+            {
+                assemblyPath = Path.Combine(BaseDir, assemblyName);
+                if (File.Exists(assemblyPath))
+                {
+                    return Assembly.LoadFrom(assemblyPath);
+                }
+                else
+                {
+                    Debug.Print($"Assembly Load Error{assemblyPath}");
+                }
+
+                var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+                var assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
+
+                assemblyPath = Path.Combine(assemblyDirectory, assemblyName);
+                return (File.Exists(assemblyPath) ? Assembly.LoadFrom(assemblyPath) : null);
+            }
+            catch (System.Exception ex)
+            {
+                throw new System.Exception(string.Format("The location of the assembly, {0} could not be resolved for loading.", assemblyName), ex);
+            }
         }
 
         private void CmdGroup_CommandStateResolve(Command_e spec, Xarial.XCad.UI.Commands.Structures.CommandState state)
@@ -110,9 +145,18 @@ namespace SldWorksLookup
 
                 //case Command_e.AddinManager:
 
-                    //Application.ShowMessageBox("开发中");
+                //Application.ShowMessageBox("开发中");
 
-                    //break;
+                //break;
+
+                case Command_e.ScriptCs:
+                    {
+                        var window = new ScriptWindow();
+                        var interopHelper = new WindowInteropHelper(window);
+                        interopHelper.Owner = this.Application.WindowHandle;
+                        window.Show();
+                    }
+                    break;
 
                 case Command_e.TestFramework:
 

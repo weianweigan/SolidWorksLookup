@@ -55,6 +55,11 @@ namespace SldWorksLookup
         //[Icon(typeof(Resource),nameof(Resource.addinmanager))]
         //AddinManager,
 
+        [Title(nameof(ScriptCs))]
+        [Description("run script in roslynpad")]
+        [Icon(typeof(Resource), nameof(Resource.csharp))]
+        ScriptCs,
+
         [Title(nameof(TestFramework))]
         [Icon(typeof(Resource), nameof(Resource.test_tube_4))]
         TestFramework
