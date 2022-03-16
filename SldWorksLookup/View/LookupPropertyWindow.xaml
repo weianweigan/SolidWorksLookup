@@ -7,7 +7,7 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:model="clr-namespace:SldWorksLookup.Model"
              mc:Ignorable="d" 
-             Height ="700" Width="700" Title="SolidWorks Lookup 0.0.2">
+             Height ="700" Width="700" Title="SolidWorks Lookup 0.0.3">
     <Window.Resources>
         <ResourceDictionary Source="pack://application:,,,/SldWorksLookup;component/WpfResource.xaml"/>
     </Window.Resources>

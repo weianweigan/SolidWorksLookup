@@ -45,10 +45,10 @@ namespace SldWorksLookup
         [Icon(typeof(Resource),nameof(Resource.color_palette))]
         ColorToInt,
 
-        [Title("SketchPathSplit")]
-        [Description("Split a SketchPath to points")]
-        [Icon(typeof(Resource), nameof(Resource.lnc_path))]
-        SketchPathSplit,
+        //[Title("SketchPathSplit")]
+        //[Description("Split a SketchPath to points")]
+        //[Icon(typeof(Resource), nameof(Resource.lnc_path))]
+        //SketchPathSplit,
 
         //[Title("AddinManager")]
         //[Description("Manager your SolidWorks Addin")]

@@ -15,10 +15,10 @@
     <ROW Property="ARPNOREPAIR" MultiBuildValue="DefaultBuild:1"/>
     <ROW Property="ARPURLINFOABOUT" Value="https://github.com/weianweigan/SolidWorksLookup"/>
     <ROW Property="Manufacturer" Value="SolidWorksLookup"/>
-    <ROW Property="ProductCode" Value="1033:{7827C630-1197-4B6D-BDF5-B4D23D425CCB} 2052:{7827C630-1197-4B6D-BDF5-B4D23D425CCB} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{121EA02A-132C-42A1-8BDC-0B13FEE4F4BD} 2052:{121EA02A-132C-42A1-8BDC-0B13FEE4F4BD} " Type="16"/>
     <ROW Property="ProductLanguage" Value="2052"/>
     <ROW Property="ProductName" Value="SolidWorksLookup"/>
-    <ROW Property="ProductVersion" Value="0.0.2.0" Type="32" TargetFile="SldWorksLookup.dll"/>
+    <ROW Property="ProductVersion" Value="0.0.3.0" Type="32" TargetFile="SldWorksLookup.dll"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{2192A076-D2E3-43E7-84AA-280E2114D310}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>

@@ -85,28 +85,28 @@ namespace SldWorksLookup
                     ShowColorWindow();
                     break;
 
-                case Command_e.SketchPathSplit:
-                    {
-                        var doc = Application.Sw.IActiveDoc2;
-                        if (doc != null)
-                        {
-                            //批量导出
-                            {
-                                var pathSolver = new PathSplit.ModelPathsSolver(doc);
-                                pathSolver.Export();
-                            }
+                //case Command_e.SketchPathSplit:
+                //    {
+                //        var doc = Application.Sw.IActiveDoc2;
+                //        if (doc != null)
+                //        {
+                //            //批量导出
+                //            {
+                //                var pathSolver = new PathSplit.ModelPathsSolver(doc);
+                //                pathSolver.Export();
+                //            }
 
-                            //使用UI导出
-                            //{
-                            //    var window = new PathSplit.PathSplitWindow(doc, Application.WindowHandle);
-                            //    window.Show();
-                            //}
-                        }
-                        else
-                            Application.ShowMessageBox("未打开文档");
+                //            //使用UI导出
+                //            //{
+                //            //    var window = new PathSplit.PathSplitWindow(doc, Application.WindowHandle);
+                //            //    window.Show();
+                //            //}
+                //        }
+                //        else
+                //            Application.ShowMessageBox("未打开文档");
 
-                    } 
-                    break;
+                //    } 
+                //    break;
 
                 //case Command_e.AddinManager:
 
