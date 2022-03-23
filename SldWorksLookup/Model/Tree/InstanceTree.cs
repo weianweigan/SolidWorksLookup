@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight.Command;
 using System.Collections.Generic;
 using System.Reflection;
+using Exceptionless;
 
 namespace SldWorksLookup.Model
 {
@@ -33,7 +34,9 @@ namespace SldWorksLookup.Model
         /// <param name="instanceProperty">特点类型的属性</param>
         /// <param name="name">节点名称，默认为接口名称。</param>
         /// <returns>类型为<see cref="InstanceTree"/>的树节点</returns>
-        public static InstanceTree Create(InstanceProperty instanceProperty, string name = null)
+        public static InstanceTree Create(
+            InstanceProperty instanceProperty, 
+            string name = null)
         {
             if (instanceProperty == null)
             {
@@ -82,6 +85,10 @@ namespace SldWorksLookup.Model
             }
 
             tree.Name = string.IsNullOrEmpty(name) ? instanceProperty?.ToString() : name;
+
+            ExceptionlessClient.Default.CreateFeatureUsage(
+                $"SnoopType:{instanceProperty?.InstanceType?.FullName}")
+                .AddTags("SnoopType");
 
             return tree;
         }

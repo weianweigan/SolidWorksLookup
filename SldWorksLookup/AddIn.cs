@@ -10,6 +10,7 @@ using SolidWorks.Interop.swconst;
 using System.Diagnostics;
 using SolidWorks.Interop.sldworks;
 using Xarial.XCad.Base.Enums;
+using Exceptionless;
 using SldWorksLookup.View;
 using System;
 using System.Linq;
@@ -24,6 +25,12 @@ namespace SldWorksLookup
     {
         public override void OnConnect()
         {
+            var version = typeof(AddIn).Assembly.GetName().Version;
+            LogExtension.Init(
+                version,
+                Application.
+                Version, null);
+
             var cmdGroup = CommandManager.AddCommandGroup<Command_e>();
             cmdGroup.CommandClick += CmdGroup_CommandClick;
             //cmdGroup.CommandStateResolve += CmdGroup_CommandStateResolve;
@@ -47,77 +54,90 @@ namespace SldWorksLookup
 
         private void CmdGroup_CommandClick(Command_e spec)
         {
-            switch (spec)
+            try
             {
-                case Command_e.Lookup:
+                switch (spec)
+                {
+                    case Command_e.Lookup:
 
-                    SnoopISldWorks();
-                    break;
+                        SnoopISldWorks();
+                        break;
 
-                case Command_e.ActiveDoc:
+                    case Command_e.ActiveDoc:
 
-                    SnoopActiveDoc();
-                    break;
+                        SnoopActiveDoc();
+                        break;
 
-                case Command_e.CurrentSelection:
+                    case Command_e.CurrentSelection:
 
-                    SnoopCurrentSelection();
-                    break;
+                        SnoopCurrentSelection();
+                        break;
 
-                case Command_e.SnoopPID:
+                    case Command_e.SnoopPID:
 
-                    SnoopPID();
-                    break;
+                        SnoopPID();
+                        break;
 
-                case Command_e.SnoopAdvancedHole:
-                    SnoopAdvancedHole();
-                    break;
+                    case Command_e.SnoopAdvancedHole:
+                        SnoopAdvancedHole();
+                        break;
 
-                case Command_e.GetObjectByPID:
-                    GetObject();
-                    break;
+                    case Command_e.GetObjectByPID:
+                        GetObject();
+                        break;
 
-                case Command_e.CaptureCmd:
-                    ShowCaptureWindow();
-                    break;
+                    case Command_e.CaptureCmd:
+                        ShowCaptureWindow();
+                        break;
 
-                case Command_e.ColorToInt:
-                    ShowColorWindow();
-                    break;
+                    case Command_e.ColorToInt:
+                        ShowColorWindow();
+                        break;
 
-                //case Command_e.SketchPathSplit:
-                //    {
-                //        var doc = Application.Sw.IActiveDoc2;
-                //        if (doc != null)
-                //        {
-                //            //批量导出
-                //            {
-                //                var pathSolver = new PathSplit.ModelPathsSolver(doc);
-                //                pathSolver.Export();
-                //            }
+                    //case Command_e.SketchPathSplit:
+                    //    {
+                    //        var doc = Application.Sw.IActiveDoc2;
+                    //        if (doc != null)
+                    //        {
+                    //            //批量导出
+                    //            {
+                    //                var pathSolver = new PathSplit.ModelPathsSolver(doc);
+                    //                pathSolver.Export();
+                    //            }
 
-                //            //使用UI导出
-                //            //{
-                //            //    var window = new PathSplit.PathSplitWindow(doc, Application.WindowHandle);
-                //            //    window.Show();
-                //            //}
-                //        }
-                //        else
-                //            Application.ShowMessageBox("未打开文档");
+                    //            //使用UI导出
+                    //            //{
+                    //            //    var window = new PathSplit.PathSplitWindow(doc, Application.WindowHandle);
+                    //            //    window.Show();
+                    //            //}
+                    //        }
+                    //        else
+                    //            Application.ShowMessageBox("未打开文档");
 
-                //    } 
-                //    break;
+                    //    } 
+                    //    break;
 
-                //case Command_e.AddinManager:
+                    //case Command_e.AddinManager:
 
                     //Application.ShowMessageBox("开发中");
 
                     //break;
 
-                case Command_e.TestFramework:
+                    case Command_e.TestFramework:
 
-                    Process.Start(new ProcessStartInfo("https://github.com/weianweigan/SldWorks.TestRunner"));
-                    break;
+                        Process.Start(new ProcessStartInfo("https://github.com/weianweigan/SldWorks.TestRunner"));
+                        break;
+                }
+
+                ExceptionlessClient.Default
+                    .CreateFeatureUsage($"CommandUsage:{spec}")
+                    .AddTags("Command");
+            }
+            catch (Exception ex)
+            {
+                ex.ToExceptionless()
+                    .AddTags($"CmdError:{spec}")
+                    .Submit();
             }
         }
 

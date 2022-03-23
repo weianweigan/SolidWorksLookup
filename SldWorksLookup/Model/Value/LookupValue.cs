@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows;
+using Exceptionless;
 
 namespace SldWorksLookup.Model
 {
@@ -227,15 +228,23 @@ namespace SldWorksLookup.Model
             {
                 return;
             }
-            //解析属性
-            if (PropertyClsfi == PropertyClsfi.Property)
+
+            try
             {
-                PropertySnoop();
+                //解析属性
+                if (PropertyClsfi == PropertyClsfi.Property)
+                {
+                    PropertySnoop();
+                }
+                //执行方法
+                else if (PropertyClsfi == PropertyClsfi.Method)
+                {
+                    MethodSnoop();
+                }
             }
-            //执行方法
-            else if (PropertyClsfi == PropertyClsfi.Method)
+            catch (Exception ex)
             {
-                MethodSnoop();
+                ex.ToExceptionless().Submit();
             }
         }
 
