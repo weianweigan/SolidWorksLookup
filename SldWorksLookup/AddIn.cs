@@ -26,7 +26,7 @@ namespace SldWorksLookup
         public override void OnConnect()
         {
             var version = typeof(AddIn).Assembly.GetName().Version;
-            LogExtension.Init(
+            LogExtension.LogStart(
                 version,
                 Application.
                 Version, null);
@@ -131,7 +131,8 @@ namespace SldWorksLookup
 
                 ExceptionlessClient.Default
                     .CreateFeatureUsage($"CommandUsage:{spec}")
-                    .AddTags("Command");
+                    .AddTags("Command")
+                    .Submit();
             }
             catch (Exception ex)
             {
@@ -320,6 +321,11 @@ namespace SldWorksLookup
             var window = CreatePopupWindow<SelectionPIDWindow>();
             window.Control.VM = new SelectionPIDViewModel(pids,Application);
             window?.Show();
+        }
+
+        public override void OnDisconnect()
+        {
+            LogExtension.LogEnded();
         }
     }
 }

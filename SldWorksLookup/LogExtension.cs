@@ -13,16 +13,28 @@ namespace SldWorksLookup
     internal static class LogExtension
     {
         public static readonly string LogFolder = Path.Combine(
-            Path.GetDirectoryName(typeof(LogExtension).Assembly.Location),
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"SldWorksLookup",
             "Log");
 
-        internal static void Init(
+        internal static void LogStart(
             Version version, 
             SwVersion_e sldWorksVersion, 
             string userName)
         {
-            ExceptionlessClient.Default.Configuration.ServerUrl = "";
-            ExceptionlessClient.Default.Configuration.ApiKey = "";
+            var configFile = Path.Combine(
+            Path.GetDirectoryName(typeof(LogExtension).Assembly.Location),
+            "exceptionless.txt");
+
+            if (!File.Exists(configFile))
+                return;
+
+            var data = File.ReadAllLines(configFile);
+
+            if (data.Length < 2)
+                return;
+
+            ExceptionlessClient.Default.Configuration.ServerUrl = data[0].Trim();
+            ExceptionlessClient.Default.Configuration.ApiKey = data[1].Trim();
 
             //服务信息收集配置
             ExceptionlessClient.Default.Configuration.IncludePrivateInformation = true;
@@ -33,9 +45,19 @@ namespace SldWorksLookup
             ExceptionlessClient.Default.Configuration.SetVersion(version);
 
             //设置本地存储日志文件夹
-            if (!Directory.Exists(LogFolder))
-                Directory.CreateDirectory(LogFolder);
-            ExceptionlessClient.Default.Configuration.UseFolderStorage(LogFolder);
+            try
+            {
+                if (!Directory.Exists(LogFolder))
+                    Directory.CreateDirectory(LogFolder);
+                ExceptionlessClient.Default.Configuration.UseFolderStorage(LogFolder);
+
+            }
+            catch (Exception ex)
+            {
+                ex.ToExceptionless()
+                    .AddTags("CreateDirectoy Failed")
+                    .Submit();
+            }
 
             //开启心跳追踪
             var uid = $"{Environment.UserName}@{Environment.MachineName}";
@@ -45,6 +67,13 @@ namespace SldWorksLookup
             ExceptionlessClient.Default.SubmitLog(
                 $"启动:{sldWorksVersion}...", LogLevel.Info);
 
+            ExceptionlessClient.Default.Startup();
+        }
+
+        internal static void LogEnded()
+        {
+            ExceptionlessClient.Default.SubmitLog("退出...", LogLevel.Info);
+            ExceptionlessClient.Default.ProcessQueue();
         }
     }
 }
