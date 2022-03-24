@@ -5,8 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SldWorksLookup.View"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:model="clr-namespace:SldWorksLookup.Model"
-             mc:Ignorable="d" 
+        xmlns:p="clr-namespace:SldWorksLookup.Properties"
+             xmlns:model="clr-namespace:SldWorksLookup.Model" 
+        mc:Ignorable="d" 
+        xmlns:viewmodel="clr-namespace:SldWorksLookup.ViewModel"
+        d:DataContext="{d:DesignInstance Type=viewmodel:LookupWindowViewModel}"
              Height ="700" Width="700" Title="SolidWorks Lookup 0.0.3">
     <Window.Resources>
         <ResourceDictionary Source="pack://application:,,,/SldWorksLookup;component/WpfResource.xaml"/>
@@ -58,21 +61,49 @@
         <xctk:PropertyGrid Margin="2" Style="{StaticResource LookupPropertyGrid}" SelectedObject="{Binding Properties}" SelectedProperty="{Binding SelectedProperty}" x:Name="_proGrid" Grid.Column="1">
             <xctk:PropertyGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Command="{Binding HelpNavigateCommand}">Api Help</MenuItem>
+                    <MenuItem Command="{Binding HelpNavigateCommand}"
+                              Header="Api Help"/>
                 </ContextMenu>
             </xctk:PropertyGrid.ContextMenu>
         </xctk:PropertyGrid>
-        <Button Grid.Row="1" Width="75" Height="25" Margin="0,0,120,0" Visibility="{Binding RunButtonVisibility}" Command="{Binding RunCommand}" HorizontalAlignment="Right" Grid.Column="1">Run</Button>
-        <Button Grid.Row="1" Width="75" Height="25" Margin="0,0,20,0"  HorizontalAlignment="Right" Command="{Binding ExitCommand}" Grid.Column="1">Exit</Button>
+        <Button Grid.Row="1" 
+                Width="75"
+                Height="25" 
+                Margin="0,0,120,0"
+                Visibility="{Binding RunButtonVisibility}"
+                Command="{Binding RunCommand}" 
+                HorizontalAlignment="Right" 
+                Grid.Column="1"
+                Content="{x:Static p:Resource.Run}"/>
+        <Button Grid.Row="1" 
+                Width="75" 
+                Height="25"
+                Margin="0,0,20,0"
+                HorizontalAlignment="Right" 
+                Command="{Binding ExitCommand}"
+                Grid.Column="1"
+                Content="{x:Static p:Resource.Close}"/>
         <Grid Grid.Row="1">
-            <Label Margin="25,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="Give me a star">
-                <Hyperlink Click="Hyperlink_Click" Name="_link" NavigateUri="https://github.com/weianweigan/SolidWorksLookup">
-                    <Image Width="15" Height="15" Source="{StaticResource GitHubDrawingImage}"></Image>
+            <Label Margin="25,0" 
+                   HorizontalAlignment="Left" 
+                   VerticalAlignment="Bottom" 
+                   ToolTip="{x:Static p:Resource.GiveMeAStar}">
+                <Hyperlink Click="Hyperlink_Click" 
+                           Name="_link" 
+                           NavigateUri="https://github.com/weianweigan/SolidWorksLookup">
+                    <Image Width="15" 
+                           Height="15" 
+                           Source="{StaticResource GitHubDrawingImage}"/>
                 </Hyperlink>
             </Label>
-            <Label HorizontalAlignment="Left" VerticalAlignment="Bottom" ToolTip="License">
-                <Hyperlink Click="Hyperlink_Click" NavigateUri="https://github.com/weianweigan/SolidWorksLookup/blob/main/LICENSE">
-                    <Image Width="15" Height="15" Source="{StaticResource license}"></Image>
+            <Label HorizontalAlignment="Left" 
+                   VerticalAlignment="Bottom" 
+                   ToolTip="{x:Static p:Resource.License}">
+                <Hyperlink Click="Hyperlink_Click" 
+                           NavigateUri="https://github.com/weianweigan/SolidWorksLookup/blob/main/LICENSE">
+                    <Image Width="15" 
+                           Height="15" 
+                           Source="{StaticResource license}"/>
                 </Hyperlink>
             </Label>
         </Grid>

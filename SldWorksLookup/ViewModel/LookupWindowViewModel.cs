@@ -142,12 +142,17 @@ namespace SldWorksLookup.ViewModel
 
         private bool CanHelpNavigate()
         {
-            return false;
+            return true;
         }
 
         private void HelpNavigate()
         {
-            throw new NotImplementedException();
+            //TODO 导航到帮助页面
+            if (SelectedProperty == null)
+            {
+                return;
+            }
+
         }
 
         #endregion

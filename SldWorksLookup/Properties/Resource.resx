@@ -130,20 +130,32 @@
   <data name="Class_32x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\class_32x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
   <data name="color_palette" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\color-palette.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Draft" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\draft.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="GiveMeAStar" xml:space="preserve">
+    <value>Give me a star</value>
+  </data>
   <data name="id" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\id.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="License" xml:space="preserve">
+    <value>License</value>
   </data>
   <data name="lnc_path" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\lnc-path.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="port" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\port.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Run" xml:space="preserve">
+    <value>Run</value>
   </data>
   <data name="SketchRegion" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\sketchregion.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

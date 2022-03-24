@@ -298,9 +298,10 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resource.zh-CN.resx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="exceptionless.txt">

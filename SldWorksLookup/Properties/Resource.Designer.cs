@@ -19,10 +19,10 @@ namespace SldWorksLookup.Properties {
     // 类通过类似于 ResGen 或 Visual Studio 的工具自动生成的。
     // 若要添加或移除成员，请编辑 .ResX 文件，然后重新运行 ResGen
     // (以 /str 作为命令选项)，或重新生成 VS 项目。
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resource {
+    public class Resource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace SldWorksLookup.Properties {
         ///   返回此类使用的缓存的 ResourceManager 实例。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SldWorksLookup.Properties.Resource", typeof(Resource).Assembly);
@@ -51,7 +51,7 @@ namespace SldWorksLookup.Properties {
         ///   使用此强类型资源类的所有资源查找执行重写。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace SldWorksLookup.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap addinmanager {
+        public static System.Drawing.Bitmap addinmanager {
             get {
                 object obj = ResourceManager.GetObject("addinmanager", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -73,7 +73,7 @@ namespace SldWorksLookup.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap BrowseData_16x {
+        public static System.Drawing.Bitmap BrowseData_16x {
             get {
                 object obj = ResourceManager.GetObject("BrowseData_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -83,7 +83,7 @@ namespace SldWorksLookup.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap Buttons {
+        public static System.Drawing.Bitmap Buttons {
             get {
                 object obj = ResourceManager.GetObject("Buttons", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -93,7 +93,7 @@ namespace SldWorksLookup.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap Class_32x {
+        public static System.Drawing.Bitmap Class_32x {
             get {
                 object obj = ResourceManager.GetObject("Class_32x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -101,9 +101,18 @@ namespace SldWorksLookup.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Close 的本地化字符串。
+        /// </summary>
+        public static string Close {
+            get {
+                return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap color_palette {
+        public static System.Drawing.Bitmap color_palette {
             get {
                 object obj = ResourceManager.GetObject("color_palette", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -113,7 +122,7 @@ namespace SldWorksLookup.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap Draft {
+        public static System.Drawing.Bitmap Draft {
             get {
                 object obj = ResourceManager.GetObject("Draft", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -121,9 +130,18 @@ namespace SldWorksLookup.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Give me a star 的本地化字符串。
+        /// </summary>
+        public static string GiveMeAStar {
+            get {
+                return ResourceManager.GetString("GiveMeAStar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap id {
+        public static System.Drawing.Bitmap id {
             get {
                 object obj = ResourceManager.GetObject("id", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -131,9 +149,18 @@ namespace SldWorksLookup.Properties {
         }
         
         /// <summary>
+        ///   查找类似 License 的本地化字符串。
+        /// </summary>
+        public static string License {
+            get {
+                return ResourceManager.GetString("License", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap lnc_path {
+        public static System.Drawing.Bitmap lnc_path {
             get {
                 object obj = ResourceManager.GetObject("lnc_path", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -143,7 +170,7 @@ namespace SldWorksLookup.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap port {
+        public static System.Drawing.Bitmap port {
             get {
                 object obj = ResourceManager.GetObject("port", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -151,9 +178,18 @@ namespace SldWorksLookup.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Run 的本地化字符串。
+        /// </summary>
+        public static string Run {
+            get {
+                return ResourceManager.GetString("Run", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap SketchRegion {
+        public static System.Drawing.Bitmap SketchRegion {
             get {
                 object obj = ResourceManager.GetObject("SketchRegion", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -163,7 +199,7 @@ namespace SldWorksLookup.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap tasklistpart_40 {
+        public static System.Drawing.Bitmap tasklistpart_40 {
             get {
                 object obj = ResourceManager.GetObject("tasklistpart_40", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -173,7 +209,7 @@ namespace SldWorksLookup.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap test_tube_4 {
+        public static System.Drawing.Bitmap test_tube_4 {
             get {
                 object obj = ResourceManager.GetObject("test_tube_4", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
