@@ -6,15 +6,13 @@ Interactive SolidWorks API exploration tool to view and navigate SolidWorks obje
     <img src=".\resources\lookup.png">
 </div>
 
+![](.\resources\search.png)
+
 ![download](https://img.shields.io/github/downloads/weianweigan/solidworkslookup/total)
 
 # Installation
 
 [DownLoad](https://github.com/weianweigan/SolidWorksLookup/releases)
-
-<div>
-    <img height="300" src=".\resources\Install.png">
-</div>
 
 # Snoop Command
 
