@@ -15,10 +15,10 @@
     <ROW Property="ARPNOREPAIR" MultiBuildValue="DefaultBuild:1"/>
     <ROW Property="ARPURLINFOABOUT" Value="https://github.com/weianweigan/SolidWorksLookup"/>
     <ROW Property="Manufacturer" Value="SolidWorksLookup"/>
-    <ROW Property="ProductCode" Value="1033:{121EA02A-132C-42A1-8BDC-0B13FEE4F4BD} 2052:{121EA02A-132C-42A1-8BDC-0B13FEE4F4BD} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{08C1D7ED-7E58-44EC-819C-F59C26A02EDD} 2052:{08C1D7ED-7E58-44EC-819C-F59C26A02EDD} " Type="16"/>
     <ROW Property="ProductLanguage" Value="2052"/>
     <ROW Property="ProductName" Value="SolidWorksLookup"/>
-    <ROW Property="ProductVersion" Value="0.0.3.0" Type="32" TargetFile="SldWorksLookup.dll"/>
+    <ROW Property="ProductVersion" Value="0.0.4.0" Type="32" TargetFile="SldWorksLookup.dll"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{2192A076-D2E3-43E7-84AA-280E2114D310}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
@@ -34,6 +34,7 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
     <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
+    <ROW Directory="Log_Dir" Directory_Parent="APPDIR" DefaultDir="Log"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
     <ROW Directory="csCZ_Dir" Directory_Parent="APPDIR" DefaultDir="cs-CZ"/>
     <ROW Directory="de_Dir" Directory_Parent="APPDIR" DefaultDir="de"/>
@@ -45,21 +46,33 @@
     <ROW Directory="ro_Dir" Directory_Parent="APPDIR" DefaultDir="ro"/>
     <ROW Directory="ru_Dir" Directory_Parent="APPDIR" DefaultDir="ru"/>
     <ROW Directory="sv_Dir" Directory_Parent="APPDIR" DefaultDir="sv"/>
+    <ROW Directory="zhCN_Dir" Directory_Parent="APPDIR" DefaultDir="zh-CN"/>
     <ROW Directory="zhHans_Dir" Directory_Parent="APPDIR" DefaultDir="zh-Hans"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
     <ROW Component="AI_ExePath" ComponentId="{4F22EBD1-42B5-4D06-BDC5-A4457C982B91}" Directory_="APPDIR" Attributes="260" KeyPath="AI_ExePath"/>
     <ROW Component="APPDIR" ComponentId="{038B048D-5DEA-495F-B6E0-B5696D869CF0}" Directory_="APPDIR" Attributes="0"/>
     <ROW Component="CommonServiceLocator.dll" ComponentId="{3D5AE2F2-4AE9-4EEF-B83A-6447DF9FCCF2}" Directory_="APPDIR" Attributes="0" KeyPath="CommonServiceLocator.dll"/>
+    <ROW Component="Exceptionless.Wpf.dll" ComponentId="{75E40F8C-62DB-4ECF-BA37-CC4D1E185792}" Directory_="APPDIR" Attributes="0" KeyPath="Exceptionless.Wpf.dll"/>
+    <ROW Component="Exceptionless.dll" ComponentId="{806F2E4F-325D-4592-B966-3CFC95BA7210}" Directory_="APPDIR" Attributes="0" KeyPath="Exceptionless.dll"/>
     <ROW Component="GalaSoft.MvvmLight.Extras.dll" ComponentId="{9FBBE9EF-A594-465F-87D8-DA5D78B45392}" Directory_="APPDIR" Attributes="0" KeyPath="GalaSoft.MvvmLight.Extras.dll"/>
     <ROW Component="GalaSoft.MvvmLight.Platform.dll" ComponentId="{8AA2B724-4356-423B-80EF-487F5C4CD46D}" Directory_="APPDIR" Attributes="0" KeyPath="GalaSoft.MvvmLight.Platform.dll"/>
     <ROW Component="GalaSoft.MvvmLight.dll" ComponentId="{3699ADB2-FD6E-4067-8E97-1291ECAA07AC}" Directory_="APPDIR" Attributes="0" KeyPath="GalaSoft.MvvmLight.dll"/>
+    <ROW Component="Log" ComponentId="{C646C5D2-ADD1-4FDE-B8A5-288DC57754C4}" Directory_="Log_Dir" Attributes="0"/>
     <ROW Component="ProductInformation" ComponentId="{623C2BB3-48A4-4102-81B5-7422B9EBED11}" Directory_="APPDIR" Attributes="260" KeyPath="Version"/>
     <ROW Component="RegAsm.exe" ComponentId="{B0134996-E0CC-491C-BC99-68FD0567C4A3}" Directory_="APPDIR" Attributes="256" KeyPath="RegAsm.exe"/>
     <ROW Component="SldWorksLookup.dll" ComponentId="{B8C62E6C-9B78-4F0E-A683-17B47F97AF40}" Directory_="APPDIR" Attributes="256" KeyPath="SldWorksLookup.dll"/>
+    <ROW Component="SldWorksLookup.resources.dll" ComponentId="{9F066C85-7EC8-418F-838D-1CD5CD7AE8D5}" Directory_="zhCN_Dir" Attributes="256" KeyPath="SldWorksLookup.resources.dll"/>
     <ROW Component="SolidWorks.Interop.sldworks.dll" ComponentId="{66B3CB99-2E68-468C-90BD-0899E84E897D}" Directory_="APPDIR" Attributes="0" KeyPath="SolidWorks.Interop.sldworks.dll"/>
     <ROW Component="SolidWorks.Interop.swconst.dll" ComponentId="{F48A0537-2460-4D0A-8E9F-AB991448DA88}" Directory_="APPDIR" Attributes="0" KeyPath="SolidWorks.Interop.swconst.dll"/>
     <ROW Component="SolidWorks.Interop.swpublished.dll" ComponentId="{21BD6282-CF30-494A-9A34-CC9D12E76F23}" Directory_="APPDIR" Attributes="0" KeyPath="SolidWorks.Interop.swpublished.dll"/>
+    <ROW Component="System.Buffers.dll" ComponentId="{CA1C9583-3C51-4EE6-A684-0467C90B6DFE}" Directory_="APPDIR" Attributes="0" KeyPath="System.Buffers.dll"/>
+    <ROW Component="System.Collections.Immutable.dll" ComponentId="{77E9E659-4E2D-4890-A911-8EBE40855193}" Directory_="APPDIR" Attributes="0" KeyPath="System.Collections.Immutable.dll"/>
+    <ROW Component="System.Memory.dll" ComponentId="{80E3E97F-BED4-467F-B955-3BA3A86D1E93}" Directory_="APPDIR" Attributes="0" KeyPath="System.Memory.dll"/>
+    <ROW Component="System.Numerics.Vectors.dll" ComponentId="{E60E4B43-BBB9-469E-84F5-B7365AF3E811}" Directory_="APPDIR" Attributes="0" KeyPath="System.Numerics.Vectors.dll"/>
+    <ROW Component="System.Reflection.Metadata.dll" ComponentId="{DC86E406-8EC1-4842-853A-A127EF4F80C9}" Directory_="APPDIR" Attributes="0" KeyPath="System.Reflection.Metadata.dll"/>
+    <ROW Component="System.Runtime.CompilerServices.Unsafe.dll" ComponentId="{F880EC0D-AE8E-459C-A992-BD823F1C3273}" Directory_="APPDIR" Attributes="0" KeyPath="System.Runtime.CompilerServices.Unsafe.dll"/>
+    <ROW Component="System.Threading.Tasks.Extensions.dll" ComponentId="{16F9328B-7519-4EA9-83E9-0BA00CC1E945}" Directory_="APPDIR" Attributes="0" KeyPath="System.Threading.Tasks.Extensions.dll"/>
     <ROW Component="System.Windows.Interactivity.dll" ComponentId="{28FE3931-1E59-4033-A813-1368437B13D4}" Directory_="APPDIR" Attributes="0" KeyPath="System.Windows.Interactivity.dll"/>
     <ROW Component="Xarial.XCad.SolidWorks.dll" ComponentId="{9CE45BBE-750C-46FD-BD39-0B9AE83552BA}" Directory_="APPDIR" Attributes="0" KeyPath="Xarial.XCad.SolidWorks.dll"/>
     <ROW Component="Xarial.XCad.Toolkit.dll" ComponentId="{21FAC1B9-644D-4EBF-8319-D1657EAC84C4}" Directory_="APPDIR" Attributes="0" KeyPath="Xarial.XCad.Toolkit.dll"/>
@@ -129,6 +142,28 @@
     <ROW File="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Component_="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" FileName="XCEEDW~4.DLL|Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Attributes="0" SourcePath="..\bin\Xceed.Wpf.AvalonDock.Themes.VS2010.dll" SelfReg="false"/>
     <ROW File="Xceed.Wpf.Toolkit.dll" Component_="Xceed.Wpf.Toolkit.dll" FileName="XCEEDW~5.DLL|Xceed.Wpf.Toolkit.dll" Attributes="0" SourcePath="..\bin\Xceed.Wpf.Toolkit.dll" SelfReg="false"/>
     <ROW File="Xceed.Wpf.AvalonDock.resources.dll_10" Component_="Xceed.Wpf.AvalonDock.resources.dll_10" FileName="XCEEDW~1.DLL|Xceed.Wpf.AvalonDock.resources.dll" Attributes="0" SourcePath="..\bin\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll" SelfReg="false"/>
+    <ROW File="Exceptionless.dll" Component_="Exceptionless.dll" FileName="EXCEPT~1.DLL|Exceptionless.dll" Attributes="0" SourcePath="..\bin\Exceptionless.dll" SelfReg="false"/>
+    <ROW File="Exceptionless.pdb" Component_="Exceptionless.dll" FileName="EXCEPT~1.PDB|Exceptionless.pdb" Attributes="0" SourcePath="..\bin\Exceptionless.pdb" SelfReg="false"/>
+    <ROW File="exceptionless.txt" Component_="txt" FileName="EXCEPT~1.TXT|exceptionless.txt" Attributes="0" SourcePath="..\bin\exceptionless.txt" SelfReg="false"/>
+    <ROW File="Exceptionless.Wpf.dll" Component_="Exceptionless.Wpf.dll" FileName="EXCEPT~2.DLL|Exceptionless.Wpf.dll" Attributes="0" SourcePath="..\bin\Exceptionless.Wpf.dll" SelfReg="false"/>
+    <ROW File="Exceptionless.Wpf.pdb" Component_="Exceptionless.Wpf.dll" FileName="EXCEPT~2.PDB|Exceptionless.Wpf.pdb" Attributes="0" SourcePath="..\bin\Exceptionless.Wpf.pdb" SelfReg="false"/>
+    <ROW File="Exceptionless.Wpf.xml" Component_="txt" FileName="EXCEPT~1.XML|Exceptionless.Wpf.xml" Attributes="0" SourcePath="..\bin\Exceptionless.Wpf.xml" SelfReg="false"/>
+    <ROW File="Exceptionless.xml" Component_="txt" FileName="EXCEPT~2.XML|Exceptionless.xml" Attributes="0" SourcePath="..\bin\Exceptionless.xml" SelfReg="false"/>
+    <ROW File="System.Buffers.dll" Component_="System.Buffers.dll" FileName="SYSTEM~2.DLL|System.Buffers.dll" Attributes="0" SourcePath="..\bin\System.Buffers.dll" SelfReg="false"/>
+    <ROW File="System.Buffers.xml" Component_="txt" FileName="SYSTEM~1.XML|System.Buffers.xml" Attributes="0" SourcePath="..\bin\System.Buffers.xml" SelfReg="false"/>
+    <ROW File="System.Collections.Immutable.dll" Component_="System.Collections.Immutable.dll" FileName="SYSTEM~3.DLL|System.Collections.Immutable.dll" Attributes="0" SourcePath="..\bin\System.Collections.Immutable.dll" SelfReg="false"/>
+    <ROW File="System.Collections.Immutable.xml" Component_="txt" FileName="SYSTEM~2.XML|System.Collections.Immutable.xml" Attributes="0" SourcePath="..\bin\System.Collections.Immutable.xml" SelfReg="false"/>
+    <ROW File="System.Memory.dll" Component_="System.Memory.dll" FileName="SYSTEM~4.DLL|System.Memory.dll" Attributes="0" SourcePath="..\bin\System.Memory.dll" SelfReg="false"/>
+    <ROW File="System.Memory.xml" Component_="txt" FileName="SYSTEM~3.XML|System.Memory.xml" Attributes="0" SourcePath="..\bin\System.Memory.xml" SelfReg="false"/>
+    <ROW File="System.Numerics.Vectors.dll" Component_="System.Numerics.Vectors.dll" FileName="SYSTEM~5.DLL|System.Numerics.Vectors.dll" Attributes="0" SourcePath="..\bin\System.Numerics.Vectors.dll" SelfReg="false"/>
+    <ROW File="System.Numerics.Vectors.xml" Component_="txt" FileName="SYSTEM~4.XML|System.Numerics.Vectors.xml" Attributes="0" SourcePath="..\bin\System.Numerics.Vectors.xml" SelfReg="false"/>
+    <ROW File="System.Reflection.Metadata.dll" Component_="System.Reflection.Metadata.dll" FileName="SYSTEM~6.DLL|System.Reflection.Metadata.dll" Attributes="0" SourcePath="..\bin\System.Reflection.Metadata.dll" SelfReg="false"/>
+    <ROW File="System.Reflection.Metadata.xml" Component_="txt" FileName="SYSTEM~5.XML|System.Reflection.Metadata.xml" Attributes="0" SourcePath="..\bin\System.Reflection.Metadata.xml" SelfReg="false"/>
+    <ROW File="System.Runtime.CompilerServices.Unsafe.dll" Component_="System.Runtime.CompilerServices.Unsafe.dll" FileName="SYSTEM~7.DLL|System.Runtime.CompilerServices.Unsafe.dll" Attributes="0" SourcePath="..\bin\System.Runtime.CompilerServices.Unsafe.dll" SelfReg="false"/>
+    <ROW File="System.Runtime.CompilerServices.Unsafe.xml" Component_="txt" FileName="SYSTEM~6.XML|System.Runtime.CompilerServices.Unsafe.xml" Attributes="0" SourcePath="..\bin\System.Runtime.CompilerServices.Unsafe.xml" SelfReg="false"/>
+    <ROW File="System.Threading.Tasks.Extensions.dll" Component_="System.Threading.Tasks.Extensions.dll" FileName="SYSTEM~8.DLL|System.Threading.Tasks.Extensions.dll" Attributes="0" SourcePath="..\bin\System.Threading.Tasks.Extensions.dll" SelfReg="false"/>
+    <ROW File="System.Threading.Tasks.Extensions.xml" Component_="txt" FileName="SYSTEM~7.XML|System.Threading.Tasks.Extensions.xml" Attributes="0" SourcePath="..\bin\System.Threading.Tasks.Extensions.xml" SelfReg="false"/>
+    <ROW File="SldWorksLookup.resources.dll" Component_="SldWorksLookup.resources.dll" FileName="SLDWOR~1.DLL|SldWorksLookup.resources.dll" Attributes="0" SourcePath="..\bin\zh-CN\SldWorksLookup.resources.dll" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
     <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" Options="2"/>
@@ -213,6 +248,7 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
     <ROW Directory_="APPDIR" Component_="APPDIR" ManualDelete="true"/>
+    <ROW Directory_="Log_Dir" Component_="Log" ManualDelete="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
     <ROW Action="AI_AppSearchEx" Type="1" Source="Prereq.dll" Target="DoAppSearchEx"/>
@@ -279,6 +315,17 @@
     <ROW Feature_="MainFeature" Component_="Xceed.Wpf.AvalonDock.Themes.VS2010.dll"/>
     <ROW Feature_="MainFeature" Component_="Xceed.Wpf.Toolkit.dll"/>
     <ROW Feature_="MainFeature" Component_="Xceed.Wpf.AvalonDock.resources.dll_10"/>
+    <ROW Feature_="MainFeature" Component_="Exceptionless.dll"/>
+    <ROW Feature_="MainFeature" Component_="Exceptionless.Wpf.dll"/>
+    <ROW Feature_="MainFeature" Component_="Log"/>
+    <ROW Feature_="MainFeature" Component_="System.Buffers.dll"/>
+    <ROW Feature_="MainFeature" Component_="System.Collections.Immutable.dll"/>
+    <ROW Feature_="MainFeature" Component_="System.Memory.dll"/>
+    <ROW Feature_="MainFeature" Component_="System.Numerics.Vectors.dll"/>
+    <ROW Feature_="MainFeature" Component_="System.Reflection.Metadata.dll"/>
+    <ROW Feature_="MainFeature" Component_="System.Runtime.CompilerServices.Unsafe.dll"/>
+    <ROW Feature_="MainFeature" Component_="System.Threading.Tasks.Extensions.dll"/>
+    <ROW Feature_="MainFeature" Component_="SldWorksLookup.resources.dll"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
     <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
