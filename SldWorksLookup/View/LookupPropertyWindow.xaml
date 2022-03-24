@@ -10,7 +10,7 @@
         mc:Ignorable="d" 
         xmlns:viewmodel="clr-namespace:SldWorksLookup.ViewModel"
         d:DataContext="{d:DesignInstance Type=viewmodel:LookupWindowViewModel}"
-             Height ="700" Width="700" Title="SolidWorks Lookup 0.0.3">
+             Height ="700" Width="700" Title="SolidWorks Lookup 0.0.4">
     <Window.Resources>
         <ResourceDictionary Source="pack://application:,,,/SldWorksLookup;component/WpfResource.xaml"/>
     </Window.Resources>
