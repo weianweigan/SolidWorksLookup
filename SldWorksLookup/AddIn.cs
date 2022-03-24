@@ -20,7 +20,7 @@ namespace SldWorksLookup
 {
     [ComVisible(true)]
     [Title("SolidWorks Lookup")]
-    [Description("Lookup SolidWorks Objects 0.0.3")]
+    [Description("Lookup SolidWorks Objects 0.0.4")]
     [Icon(typeof(Resource),nameof(Resource.BrowseData_16x))]
     public class AddIn:SwAddInEx
     {

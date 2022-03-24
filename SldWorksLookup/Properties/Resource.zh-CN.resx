@@ -109,4 +109,10 @@
   <data name="License" xml:space="preserve">
     <value>许可</value>
   </data>
+  <data name="CannotGetHelpUrl" xml:space="preserve">
+    <value>无法得到帮助链接</value>
+  </data>
+  <data name="SeeHelpOnline" xml:space="preserve">
+    <value>查看：{0} 的在线帮助</value>
+  </data>
 </root>
