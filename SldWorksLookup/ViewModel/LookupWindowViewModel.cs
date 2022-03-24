@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight;
+﻿using Exceptionless;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using SldWorksLookup.Model;
 using SldWorksLookup.Properties;
@@ -164,6 +165,9 @@ namespace SldWorksLookup.ViewModel
         private void HelpClick()
         {
             SelectedProperty?.HelpNavigate();
+            ExceptionlessClient.Default
+                .CreateFeatureUsage($"ApiHelp:{HelpInfo}")
+                .Submit();
         }
 
 
