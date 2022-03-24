@@ -3,10 +3,12 @@ using SldWorksLookup.ViewModel;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using Xarial.XCad.SolidWorks;
+using Xceed.Wpf.Toolkit.PropertyGrid;
 
 namespace SldWorksLookup.View
 {
@@ -133,6 +135,19 @@ namespace SldWorksLookup.View
             if (sender is Hyperlink link)
             {
                 Process.Start(new ProcessStartInfo(link.NavigateUri.AbsoluteUri));
+            }
+        }
+
+        private void _proGrid_SelectedPropertyItemChanged(object sender, 
+            RoutedPropertyChangedEventArgs<Xceed.Wpf.Toolkit.PropertyGrid.PropertyItemBase> e)
+        {
+            if (sender is PropertyGrid grid)
+            {
+                if (grid.SelectedObject is LookupProperties properties)
+                {
+                    VM.SelectedProperty = properties.Properties
+                        .FirstOrDefault(p => p.DisplayName == grid.SelectedProperty.ToString());
+                }
             }
         }
     }

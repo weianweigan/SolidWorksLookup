@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using GalaSoft.MvvmLight.Command;
+using SldWorksLookup.Helper;
 
 namespace SldWorksLookup.Model
 {
@@ -34,6 +38,55 @@ namespace SldWorksLookup.Model
             PropertyType = type;
         }
 
+        public string ParentTypeName { get; internal set; }
+
+        private bool CanHelpNavigate()
+        {
+            return true;
+        }
+
+        public void HelpNavigate()
+        {
+            var url = GetUrl();
+            if (string.IsNullOrEmpty(url))
+            {
+                MessageBox.Show(Properties.Resource.CannotGetHelpUrl);
+            }
+            else
+            {
+                Process.Start(url);
+            }
+        }
+
+        public string GetUrl()
+        {
+            var url = string.Empty;
+            var interfaceName = ParentTypeName;
+            if (!interfaceName.StartsWith("I"))
+                interfaceName = $"I{interfaceName}";
+
+            var name = DisplayName;
+            if (name.StartsWith("get_") || name.StartsWith("set_"))
+                name = name.Substring(4, name.Length - 4);
+
+            switch (PropertyClsfi)
+            {
+                case PropertyClsfi.None:
+                    break;
+                case PropertyClsfi.Property:
+                    url = ApiUrlUtil.GetProperty(interfaceName, name);
+                    break;
+                case PropertyClsfi.Method:
+                    url = ApiUrlUtil.GetProperty(interfaceName, name);
+                    break;
+                case PropertyClsfi.Event:
+                    break;
+                case PropertyClsfi.Class:
+                    url = ApiUrlUtil.GetInterface(interfaceName);
+                    break;
+            }
+            return url;
+        }
     }
 
     public abstract class LookupProperty<TProperty>:PropertyEntity

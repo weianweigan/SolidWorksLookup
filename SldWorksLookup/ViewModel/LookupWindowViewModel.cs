@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using SldWorksLookup.Model;
+using SldWorksLookup.Properties;
 using SolidWorks.Interop.sldworks;
 using System;
 using System.Collections.Generic;
@@ -21,8 +22,9 @@ namespace SldWorksLookup.ViewModel
         private LookupProperties _properties;
         private RelayCommand _runCommand;
         private Visibility _runButtonVisibility;
-        private object selectedProperty;
-        private RelayCommand _helpNavigateCommand;
+        private LookupProperty _selectedProperty;
+        private RelayCommand _helpCommand;
+        private string _helpInfo;
 
         #endregion
 
@@ -67,7 +69,7 @@ namespace SldWorksLookup.ViewModel
 
         public RelayCommand RunCommand { get => _runCommand ?? (_runCommand = new RelayCommand(RunClick, CanRunClick)); set => _runCommand = value; }
 
-        public RelayCommand HelpNavigateCommand { get => _helpNavigateCommand ?? (_helpNavigateCommand = new RelayCommand(HelpNavigate,CanHelpNavigate)); set => _helpNavigateCommand = value; }
+        public RelayCommand HelpCommand { get => _helpCommand ?? (_helpCommand = new RelayCommand(HelpClick, CanHelp)); set => _helpCommand = value; }
 
         public ObservableCollection<InstanceTree> Trees { get => _trees; set => Set(ref _trees, value); }
 
@@ -83,14 +85,28 @@ namespace SldWorksLookup.ViewModel
 
         public Visibility RunButtonVisibility { get => _runButtonVisibility; set => Set(ref _runButtonVisibility, value); }
 
-        public object SelectedProperty
+        public LookupProperty SelectedProperty
         {
-            get => selectedProperty; set
+            get => _selectedProperty; set
             {
-                Set(ref selectedProperty, value);
-                HelpNavigateCommand.RaiseCanExecuteChanged();
+                Set(ref _selectedProperty, value);
+                if (_selectedProperty != null)
+                {
+                    GenerateHelpInfo();
+                }
+                HelpCommand.RaiseCanExecuteChanged();
             }
         }
+
+        private void GenerateHelpInfo()
+        {
+            var name = _selectedProperty.DisplayName;
+            if (name.StartsWith("get_") || name.StartsWith("end_"))
+                name = name.Substring(4, name.Length - 4);
+            HelpInfo = $"{_selectedProperty.ParentTypeName}.{name}";
+        }
+
+        public string HelpInfo { get => _helpInfo; set => Set(ref _helpInfo , value); }
 
         #endregion
 
@@ -140,20 +156,16 @@ namespace SldWorksLookup.ViewModel
             return flag;
         }
 
-        private bool CanHelpNavigate()
+        private bool CanHelp()
         {
-            return true;
+            return SelectedProperty != null;
         }
 
-        private void HelpNavigate()
+        private void HelpClick()
         {
-            //TODO 导航到帮助页面
-            if (SelectedProperty == null)
-            {
-                return;
-            }
-
+            SelectedProperty?.HelpNavigate();
         }
+
 
         #endregion
     }

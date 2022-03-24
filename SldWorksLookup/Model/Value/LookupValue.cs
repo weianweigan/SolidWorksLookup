@@ -9,6 +9,8 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows;
 using Exceptionless;
+using SldWorksLookup.Helper;
+using System.Diagnostics;
 
 namespace SldWorksLookup.Model
 {
@@ -218,6 +220,7 @@ namespace SldWorksLookup.Model
             set => _openCommand = value;
         }
 
+       public string ParentTypeName { get; internal set; }
         #endregion
 
         #region Methods
@@ -438,7 +441,6 @@ namespace SldWorksLookup.Model
 
             return valueName;
         }
-
         #endregion
     }
 }

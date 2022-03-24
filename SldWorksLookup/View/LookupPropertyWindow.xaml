@@ -58,14 +58,24 @@
             </TreeView.ItemTemplate>
         </TreeView>
         <GridSplitter Width="5" Background="AliceBlue"/>
-        <xctk:PropertyGrid Margin="2" Style="{StaticResource LookupPropertyGrid}" SelectedObject="{Binding Properties}" SelectedProperty="{Binding SelectedProperty}" x:Name="_proGrid" Grid.Column="1">
-            <xctk:PropertyGrid.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Command="{Binding HelpNavigateCommand}"
-                              Header="Api Help"/>
-                </ContextMenu>
-            </xctk:PropertyGrid.ContextMenu>
+        <xctk:PropertyGrid Margin="2"
+                           Style="{StaticResource LookupPropertyGrid}" 
+                           SelectedObject="{Binding Properties}" 
+                           SelectedPropertyItemChanged="_proGrid_SelectedPropertyItemChanged"
+                           SelectedProperty="{Binding SelectedProperty,UpdateSourceTrigger=PropertyChanged}" 
+                           x:Name="_proGrid" 
+                           Grid.Column="1">
         </xctk:PropertyGrid>
+        <TextBlock VerticalAlignment="Center"
+                   Grid.Row="1"
+                   Grid.Column="1"
+                   HorizontalAlignment="Left"
+                   Margin="0,0,220,0">
+            <Hyperlink Command="{Binding HelpCommand}">
+                <Image Source="{StaticResource helpDrawingImage}" Height="15"/>
+                <TextBlock Text="{Binding HelpInfo}"/>
+            </Hyperlink>
+        </TextBlock>
         <Button Grid.Row="1" 
                 Width="75"
                 Height="25" 

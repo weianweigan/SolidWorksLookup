@@ -160,6 +160,7 @@
   <ItemGroup>
     <Compile Include="AddIn.cs" />
     <Compile Include="Command_e.cs" />
+    <Compile Include="Helper\ApiUrlUtil.cs" />
     <Compile Include="LogExtension.cs" />
     <Compile Include="Helper\Extension\IComponentExtension.cs" />
     <Compile Include="Helper\Extension\IDrawingDocExtension.cs" />

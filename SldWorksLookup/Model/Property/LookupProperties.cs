@@ -123,6 +123,14 @@ namespace SldWorksLookup.Model
             return Name ?? base.ToString();
         }
 
+        internal void SetParentTypeName(string name)
+        {
+            foreach (var property in Properties)
+            {
+                property.ParentTypeName = name;
+            }
+        }
+
         #endregion
     }
 }

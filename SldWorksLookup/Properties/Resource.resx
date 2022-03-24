@@ -127,6 +127,9 @@
   <data name="Buttons" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\buttons.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="CannotGetHelpUrl" xml:space="preserve">
+    <value>Cannot get a help url</value>
+  </data>
   <data name="Class_32x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\class_32x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -156,6 +159,9 @@
   </data>
   <data name="Run" xml:space="preserve">
     <value>Run</value>
+  </data>
+  <data name="SeeHelpOnline" xml:space="preserve">
+    <value>See {0} Help Online</value>
   </data>
   <data name="SketchRegion" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\sketchregion.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

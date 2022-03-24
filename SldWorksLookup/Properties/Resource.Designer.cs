@@ -91,6 +91,15 @@ namespace SldWorksLookup.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Cannot get a help url 的本地化字符串。
+        /// </summary>
+        public static string CannotGetHelpUrl {
+            get {
+                return ResourceManager.GetString("CannotGetHelpUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
         public static System.Drawing.Bitmap Class_32x {
@@ -183,6 +192,15 @@ namespace SldWorksLookup.Properties {
         public static string Run {
             get {
                 return ResourceManager.GetString("Run", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 See {0} Help Online 的本地化字符串。
+        /// </summary>
+        public static string SeeHelpOnline {
+            get {
+                return ResourceManager.GetString("SeeHelpOnline", resourceCulture);
             }
         }
         

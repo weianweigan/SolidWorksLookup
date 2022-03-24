@@ -14,6 +14,7 @@ using Exceptionless;
 using SldWorksLookup.View;
 using System;
 using System.Linq;
+using Xarial.XCad.SolidWorks.Enums;
 
 namespace SldWorksLookup
 {
@@ -23,6 +24,7 @@ namespace SldWorksLookup
     [Icon(typeof(Resource),nameof(Resource.BrowseData_16x))]
     public class AddIn:SwAddInEx
     {
+
         public override void OnConnect()
         {
             var version = typeof(AddIn).Assembly.GetName().Version;
@@ -33,6 +35,8 @@ namespace SldWorksLookup
 
             var cmdGroup = CommandManager.AddCommandGroup<Command_e>();
             cmdGroup.CommandClick += CmdGroup_CommandClick;
+
+            Helper.ApiUrlUtil.Init(Application.Version);
             //cmdGroup.CommandStateResolve += CmdGroup_CommandStateResolve;
         }
 

@@ -137,6 +137,8 @@ namespace SldWorksLookup.Model
                 GetMethods();
             }
 
+            Properties?.SetParentTypeName(InstanceType.Name);
+
             _hasInit = true;
         }
 
@@ -239,6 +241,7 @@ namespace SldWorksLookup.Model
                     Properties.Add(LookupPropertyProperty.CreateMsgOnly(property, msg));
                 }
             }
+
         }
 
         protected bool TryPropertyToLookup(PropertyInfo propertyInfo, object instance, out LookupProperty lookupProperty)
