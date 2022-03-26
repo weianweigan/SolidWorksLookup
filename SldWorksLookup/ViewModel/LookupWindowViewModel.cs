@@ -165,7 +165,7 @@ namespace SldWorksLookup.ViewModel
         private void HelpClick()
         {
             SelectedProperty?.HelpNavigate();
-            ExceptionlessClient.Default
+            LogExtension.Client?
                 .CreateFeatureUsage($"ApiHelp:{HelpInfo}")
                 .Submit();
         }

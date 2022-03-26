@@ -133,14 +133,14 @@ namespace SldWorksLookup
                         break;
                 }
 
-                ExceptionlessClient.Default
+                LogExtension.Client
                     .CreateFeatureUsage($"CommandUsage:{spec}")
                     .AddTags("Command")
                     .Submit();
             }
             catch (Exception ex)
             {
-                ex.ToExceptionless()
+                ex.ToExceptionless(LogExtension.Client)
                     .AddTags($"CmdError:{spec}")
                     .Submit();
             }

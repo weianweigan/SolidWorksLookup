@@ -86,7 +86,7 @@ namespace SldWorksLookup.Model
 
             tree.Name = string.IsNullOrEmpty(name) ? instanceProperty?.ToString() : name;
 
-            ExceptionlessClient.Default.CreateFeatureUsage(
+            LogExtension.Client?.CreateFeatureUsage(
                 $"SnoopType:{instanceProperty?.InstanceType?.FullName}")
                 .AddTags("SnoopType");
 

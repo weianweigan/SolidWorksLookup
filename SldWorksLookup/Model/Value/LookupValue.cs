@@ -247,7 +247,7 @@ namespace SldWorksLookup.Model
             }
             catch (Exception ex)
             {
-                ex.ToExceptionless().Submit();
+                ex.ToExceptionless(LogExtension.Client).Submit();
             }
         }
 
