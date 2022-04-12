@@ -252,6 +252,7 @@ namespace SldWorksLookup
                 case swSelectType_e.swSelBLOCKDEF:
                     break;
                 case swSelectType_e.swSelCENTERMARKSYMS:
+                    type=typeof(ICenterMark);
                     break;
                 case swSelectType_e.swSelSIMULATION:
                     break;
