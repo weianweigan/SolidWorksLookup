@@ -5,26 +5,30 @@ namespace SldWorksLookup.Model
 {
     public class LookupParameterProperty : LookupProperty
     {
-        public LookupParameterProperty(ParameterInfo parameter, object value) : base(parameter.Name, value, parameter.ParameterType)
+        public LookupParameterProperty(ParameterInfo parameter, object value) : base(parameter.Name, value, GetEffectiveType(parameter.ParameterType))
         {
             IsReadOnly = false;
         }
 
-        public LookupParameterProperty(ParameterInfo parameter) : base(parameter.Name, CreateInstace(parameter.ParameterType), parameter.ParameterType)
+        public LookupParameterProperty(ParameterInfo parameter) : base(parameter.Name, CreateInstace(parameter.ParameterType), GetEffectiveType(parameter.ParameterType))
         {
             IsReadOnly = false;
         }
 
         public static object CreateInstace(Type type)
         {
-            if (type.IsValueType)
+            var effectiveType = GetEffectiveType(type);
+            if (effectiveType.IsValueType && Nullable.GetUnderlyingType(effectiveType) == null)
             {
-                return Activator.CreateInstance(type);
+                return Activator.CreateInstance(effectiveType);
             }
-            else
-            {
-                return new object();
-            }
+
+            return null;
+        }
+
+        internal static Type GetEffectiveType(Type type)
+        {
+            return type.IsByRef ? type.GetElementType() : type;
         }
     }
 

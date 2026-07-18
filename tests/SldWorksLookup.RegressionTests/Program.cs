@@ -1,5 +1,7 @@
 using SldWorksLookup.PathSplit;
 using SldWorksLookup.Helper;
+using SldWorksLookup.Model;
+using SolidWorks.Interop.sldworks;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,7 +34,11 @@ namespace SldWorksLookup.RegressionTests
                 LogConfigurationReadsTwoTrimmedValues,
                 LogConfigurationRejectsMissingOrIncompleteFile,
                 ConstructionCleanupRunsCleanupOnceWhenInitializeThrows,
-                ConstructionCleanupDoesNotCleanupWhenInitializeSucceeds
+                ConstructionCleanupDoesNotCleanupWhenInitializeSucceeds,
+                ValueArrayInspectionHandlesNullElements,
+                PropertyBrowsingHandlesSetterOnlyProperty,
+                ReferenceParametersDefaultToNull,
+                ComClassWithInternalIMapsToInterface
             };
 
             var failed = 0;
@@ -311,6 +317,38 @@ namespace SldWorksLookup.RegressionTests
             AssertEqual(0, cleanupCount, "Cleanup count");
         }
 
+        private static void ValueArrayInspectionHandlesNullElements()
+        {
+            var values = new object[] { null, 42 };
+
+            AssertEqual(true, ObjectMatcherUtil.IsValueArray(values), "Null-leading value array");
+
+            var lookup = LookupValue.CreateValue(values, typeof(object[]));
+            AssertEqual("<NULL>,42", lookup.ValueName, "Null-leading value array display");
+        }
+
+        private static void PropertyBrowsingHandlesSetterOnlyProperty()
+        {
+            var instanceProperty = InstanceProperty.Create(new SetterOnlyPropertyOwner(), typeof(SetterOnlyPropertyOwner));
+            var property = instanceProperty.Properties.Properties
+                .FirstOrDefault(p => p.DisplayName == nameof(SetterOnlyPropertyOwner.WriteOnly));
+
+            if (property == null)
+                throw new InvalidOperationException("Setter-only property was not surfaced.");
+
+            AssertEqual("Write-only property", property.Value as string, "Setter-only property message");
+        }
+
+        private static void ReferenceParametersDefaultToNull()
+        {
+            AssertEqual(null, LookupParameterProperty.CreateInstace(typeof(string)), "String default");
+        }
+
+        private static void ComClassWithInternalIMapsToInterface()
+        {
+            AssertSame(typeof(IImportDxfDwgData), TypeMatcherUtil.Match(typeof(ImportDxfDwgDataClass)), "Import DXF/DWG interface");
+        }
+
         private static List<List<Segment>> BuildChains(List<Segment> segments)
         {
             return SketchChainTopology.Build(
@@ -341,6 +379,12 @@ namespace SldWorksLookup.RegressionTests
         private static void AssertEqual(string expected, string actual, string message)
         {
             if (expected != actual)
+                throw new InvalidOperationException(message + ". Expected " + expected + ", got " + actual + ".");
+        }
+
+        private static void AssertEqual(object expected, object actual, string message)
+        {
+            if (!object.Equals(expected, actual))
                 throw new InvalidOperationException(message + ". Expected " + expected + ", got " + actual + ".");
         }
 
@@ -408,6 +452,14 @@ namespace SldWorksLookup.RegressionTests
                 var start = Start;
                 Start = End;
                 End = start;
+            }
+        }
+
+        private sealed class SetterOnlyPropertyOwner
+        {
+            public int WriteOnly
+            {
+                set { }
             }
         }
     }

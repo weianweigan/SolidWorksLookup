@@ -17,6 +17,12 @@ namespace SldWorksLookup
                 name = name.Remove(name.Length - 5, 5);
             }
 
+            var interfaceType = sourceType.Assembly.GetType($"{sourceType.Namespace}.I{name}");
+            if (interfaceType != null && interfaceType.IsInterface)
+            {
+                return interfaceType;
+            }
+
             var hasValue = SolidWorksTypes.FirstOrDefault(p => p.Item1 == name);
             return hasValue != null ? hasValue.Item2: sourceType;
         }
@@ -42,7 +48,7 @@ namespace SldWorksLookup
                             new Tuple<string,Type>("BendTable", typeof(IBendTable)),
                             new Tuple<string,Type>("BendTableAnnotation", typeof(IBendTableAnnotation)),
                             new Tuple<string,Type>("BlockDefinition", typeof(IBlockDefinition)),
-                            new Tuple<string,Type>("Blocknstance", typeof(IBlockInstance)),
+                            new Tuple<string,Type>("BlockInstance", typeof(IBlockInstance)),
                             new Tuple<string,Type>("Body", typeof(IBody)),
                             new Tuple<string,Type>("Body2", typeof(IBody2)),
                             new Tuple<string,Type>("BodyFolder", typeof(IBodyFolder)),
@@ -205,14 +211,14 @@ namespace SldWorksLookup
                             new Tuple<string,Type>("HoleStandardsData", typeof(IHoleStandardsData)),
                             new Tuple<string,Type>("HoleTable", typeof(IHoleTable)),
                             new Tuple<string,Type>("HoleTableAnnotation", typeof(IHoleTableAnnotation)),
-                            new Tuple<string,Type>("mportDxfDwgData", typeof(IImportDxfDwgData)),
-                            new Tuple<string,Type>("mportedCurveFeatureData", typeof(IImportedCurveFeatureData)),
-                            new Tuple<string,Type>("mportgesData", typeof(IImportIgesData)),
-                            new Tuple<string,Type>("mportStepData", typeof(IImportStepData)),
-                            new Tuple<string,Type>("ndentFeatureData", typeof(IIndentFeatureData)),
-                            new Tuple<string,Type>("nterference", typeof(IInterference)),
-                            new Tuple<string,Type>("nterferenceDetectionMgr", typeof(IInterferenceDetectionMgr)),
-                            new Tuple<string,Type>("ntersectFeatureData", typeof(IIntersectFeatureData)),
+                            new Tuple<string,Type>("ImportDxfDwgData", typeof(IImportDxfDwgData)),
+                            new Tuple<string,Type>("ImportedCurveFeatureData", typeof(IImportedCurveFeatureData)),
+                            new Tuple<string,Type>("ImportIgesData", typeof(IImportIgesData)),
+                            new Tuple<string,Type>("ImportStepData", typeof(IImportStepData)),
+                            new Tuple<string,Type>("IndentFeatureData", typeof(IIndentFeatureData)),
+                            new Tuple<string,Type>("Interference", typeof(IInterference)),
+                            new Tuple<string,Type>("InterferenceDetectionMgr", typeof(IInterferenceDetectionMgr)),
+                            new Tuple<string,Type>("IntersectFeatureData", typeof(IIntersectFeatureData)),
                             new Tuple<string,Type>("JogFeatureData", typeof(IJogFeatureData)),
                             new Tuple<string,Type>("JoinFeatureData", typeof(IJoinFeatureData)),
                             new Tuple<string,Type>("JournalManager", typeof(IJournalManager)),
@@ -304,7 +310,7 @@ namespace SldWorksLookup
                             new Tuple<string,Type>("PMDatumFeature", typeof(IPMIDatumFeature)),
                             new Tuple<string,Type>("PMDatumTarget", typeof(IPMIDatumTarget)),
                             new Tuple<string,Type>("PMDimensionData", typeof(IPMIDimensionData)),
-                            new Tuple<string,Type>("PMDimensiontem", typeof(IPMIDimensionItem)),
+                            new Tuple<string,Type>("PMDimensionItem", typeof(IPMIDimensionItem)),
                             new Tuple<string,Type>("PMFrameData", typeof(IPMIFrameData)),
                             new Tuple<string,Type>("PMGtolBoxData", typeof(IPMIGtolBoxData)),
                             new Tuple<string,Type>("PMGtolData", typeof(IPMIGtolData)),
@@ -370,7 +376,7 @@ namespace SldWorksLookup
                             new Tuple<string,Type>("SelectionMgr", typeof(ISelectionMgr)),
                             new Tuple<string,Type>("SelectionSet", typeof(ISelectionSet)),
                             new Tuple<string,Type>("SelectionSetFolder", typeof(ISelectionSetFolder)),
-                            new Tuple<string,Type>("SelectionSettem", typeof(ISelectionSetItem)),
+                            new Tuple<string,Type>("SelectionSetItem", typeof(ISelectionSetItem)),
                             new Tuple<string,Type>("Sensor", typeof(ISensor)),
                             new Tuple<string,Type>("SFSymbol", typeof(ISFSymbol)),
                             new Tuple<string,Type>("Sheet", typeof(ISheet)),
@@ -394,7 +400,7 @@ namespace SldWorksLookup
                             new Tuple<string,Type>("Sketch", typeof(ISketch)),
                             new Tuple<string,Type>("SketchArc", typeof(ISketchArc)),
                             new Tuple<string,Type>("SketchBlockDefinition", typeof(ISketchBlockDefinition)),
-                            new Tuple<string,Type>("SketchBlocknstance", typeof(ISketchBlockInstance)),
+                            new Tuple<string,Type>("SketchBlockInstance", typeof(ISketchBlockInstance)),
                             new Tuple<string,Type>("SketchContour", typeof(ISketchContour)),
                             new Tuple<string,Type>("SketchedBendFeatureData", typeof(ISketchedBendFeatureData)),
                             new Tuple<string,Type>("SketchEllipse", typeof(ISketchEllipse)),
@@ -468,7 +474,7 @@ namespace SldWorksLookup
                             new Tuple<string,Type>("TitleBlockTableAnnotation", typeof(ITitleBlockTableAnnotation)),
                             new Tuple<string,Type>("TitleBlockTableFeature", typeof(ITitleBlockTableFeature)),
                             new Tuple<string,Type>("ToolingSplitFeatureData", typeof(IToolingSplitFeatureData)),
-                            new Tuple<string,Type>("TreeControltem", typeof(ITreeControlItem)),
+                            new Tuple<string,Type>("TreeControlItem", typeof(ITreeControlItem)),
                             new Tuple<string,Type>("TriadManipulator", typeof(ITriadManipulator)),
                             new Tuple<string,Type>("UniversalJointMateFeatureData", typeof(IUniversalJointMateFeatureData)),
                             new Tuple<string,Type>("UserProgressBar", typeof(IUserProgressBar)),
@@ -492,5 +498,4 @@ namespace SldWorksLookup
         };
     }
 }
-
 

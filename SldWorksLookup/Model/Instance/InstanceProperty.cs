@@ -212,22 +212,35 @@ namespace SldWorksLookup.Model
                 if (IsPropertySupport(property.Name,out string msg))
                 {
                     //带有索引器的属性
-                    if (property.GetMethod.GetParameters().Length > 0)
+                    if ((property.GetMethod != null && property.GetMethod.GetParameters().Length > 0) ||
+                        (property.SetMethod != null && property.SetMethod.GetParameters().Length > 1))
                     {
                         //生成方法
-                        var flag = TryMethodToLookup(property.GetMethod, Instance, out var getLookupProperty);
-                        if (flag)
+                        if (property.GetMethod != null)
                         {
-                            Properties.Add(getLookupProperty);
+                            var flag = TryMethodToLookup(property.GetMethod, Instance, out var getLookupProperty);
+                            if (flag)
+                            {
+                                Properties.Add(getLookupProperty);
+                            }
                         }
-                        flag = TryMethodToLookup(property.SetMethod, Instance, out var setLookupProperty);
-                        if (flag)
+                        if (property.SetMethod != null)
                         {
-                            Properties.Add(setLookupProperty);
+                            var flag = TryMethodToLookup(property.SetMethod, Instance, out var setLookupProperty);
+                            if (flag)
+                            {
+                                Properties.Add(setLookupProperty);
+                            }
                         }
                     }
                     else//普通属性
                     {
+                        if (property.GetMethod == null)
+                        {
+                            Properties.Add(LookupPropertyProperty.CreateMsgOnly(property, "Write-only property"));
+                            continue;
+                        }
+
                         var flag = TryPropertyToLookup(property, Instance, out var lookupProperty);
                         if (flag)
                         {

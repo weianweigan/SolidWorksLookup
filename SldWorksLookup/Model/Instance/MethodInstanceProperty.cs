@@ -51,11 +51,28 @@ namespace SldWorksLookup.Model
         {
             //找到参数
             var parameters = Properties.Properties.OfType<LookupParameterProperty>();
+            var methodParameters = MethodInfo.GetParameters();
 
-            var nullParamenter = parameters.FirstOrDefault(p => p.Value == null);
-            if (nullParamenter != null)
+            var order = 0;
+            foreach (var parameter in parameters)
             {
-                throw new ArgumentNullException($"{nullParamenter.PropertyType.Name} is Null");
+                var parameterInfo = methodParameters[order++];
+                var parameterType = LookupParameterProperty.GetEffectiveType(parameterInfo.ParameterType);
+                if (parameter.Value == null)
+                {
+                    if (parameterType.IsValueType && Nullable.GetUnderlyingType(parameterType) == null)
+                    {
+                        throw new ArgumentNullException($"{parameterType.Name} is Null");
+                    }
+
+                    continue;
+                }
+
+                var validationType = Nullable.GetUnderlyingType(parameterType) ?? parameterType;
+                if (!validationType.IsInstanceOfType(parameter.Value))
+                {
+                    throw new ArgumentException($"{parameter.DisplayName} must be {validationType.Name}");
+                }
             }
 
             var parametersValue = parameters.Select(p => p.Value).ToArray();

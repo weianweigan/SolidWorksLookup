@@ -50,6 +50,10 @@ namespace SldWorksLookup.Model
             {
                 MessageBox.Show(ex.Message);
             }
+            finally
+            {
+                NodeStatus = NodeStatus.Ok;
+            }
         }
 
         [Obsolete]

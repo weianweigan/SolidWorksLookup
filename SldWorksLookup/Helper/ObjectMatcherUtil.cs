@@ -15,15 +15,18 @@ namespace SldWorksLookup
 
         public static bool IsValueArray(this object obj)
         {
-            bool flag = false;
             if (obj is Array array)
             {
-                if (array.Length > 0 && array.GetValue(0).GetType().IsValueType)
+                foreach (var item in array)
                 {
-                    flag = true;
+                    if (item != null)
+                    {
+                        return item.GetType().IsValueType || item is string;
+                    }
                 }
             }
-            return flag;
+
+            return false;
         }
 
         public static IEnumerable<object> ObjToArray(this object obj)
