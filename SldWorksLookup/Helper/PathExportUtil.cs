@@ -80,13 +80,19 @@ namespace SldWorksLookup.Helper
                 var ep = wrapper.SourceEndPoint;
 
                 seCurve = seCurve.CreateTrimmedCurve2(sp.X, sp.Y, sp.Z, ep.X, ep.Y, ep.Z);
+                seCurve = RequireExportValue(seCurve, "Cannot trim sketch segment curve.");
 
                 var body = seCurve.CreateWireBody();
-                body.Display2(doc as PartDoc, Information.RGB(255, 0, 0), (int)swTempBodySelectOptions_e.swTempBodySelectOptionNone);
+                body = RequireExportValue(body, "Cannot create wire body for trimmed sketch segment curve.");
 
-                curve = curve == null
-                    ? seCurve
-                    : modeler.MergeCurves(new object[] { curve, seCurve });
+                var partDoc = RequireExportValue(doc as PartDoc, "Active document is not a part document.");
+                body.Display2(partDoc, Information.RGB(255, 0, 0), (int)swTempBodySelectOptions_e.swTempBodySelectOptionNone);
+
+                curve = MergeCurveOrThrow(
+                    curve,
+                    seCurve,
+                    (left, right) => modeler.MergeCurves(new object[] { left, right }) as ICurve,
+                    "while merging sketch path segment");
             }
 
             if (curve == null)
@@ -97,12 +103,41 @@ namespace SldWorksLookup.Helper
             var points = SplitCurve(curve, 10);
 
             doc.Insert3DSketch();
-            var ske3D = doc.SketchManager.ActiveSketch;
 
             foreach (var point in points)
             {
                 doc.SketchManager.CreatePoint(point.X, point.Y, point.Z);
             }
+        }
+
+        internal static TCurve MergeCurveOrThrow<TCurve>(
+            TCurve currentCurve,
+            TCurve nextCurve,
+            Func<TCurve, TCurve, TCurve> mergeCurves,
+            string context)
+            where TCurve : class
+        {
+            if (nextCurve == null)
+                throw new InvalidOperationException("Cannot merge a null sketch path segment curve. " + context);
+            if (currentCurve == null)
+                return nextCurve;
+            if (mergeCurves == null)
+                throw new ArgumentNullException(nameof(mergeCurves));
+
+            var merged = mergeCurves(currentCurve, nextCurve);
+            if (merged == null)
+                throw new InvalidOperationException("Cannot merge sketch path curves. " + context);
+
+            return merged;
+        }
+
+        private static TValue RequireExportValue<TValue>(TValue value, string message)
+            where TValue : class
+        {
+            if (value == null)
+                throw new InvalidOperationException(message);
+
+            return value;
         }
 
         public static List<Point3D> SplitCurve(ICurve curve, int num)

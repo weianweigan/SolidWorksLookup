@@ -109,3 +109,85 @@ PASS SamplingPlanRejectsNonPositiveOrNonFiniteStep
 
 - Build still emits pre-existing CS0168 warnings in `SldWorksLookup/AddIn.cs` and `SldWorksLookup/LogExtension.cs`; those files are outside Task 1 ownership and were not changed.
 - The SolidWorks COM export path was build-verified but not manually exercised in SolidWorks.
+
+## CHANGES_REQUESTED Follow-up
+
+### Follow-up RED
+
+Added tests for:
+
+- first segment reversal
+- connected successor reversal
+- per-segment continuity
+- preserving original input list membership/order
+- normal sampling
+- `distanceToNextPoint == segmentLength`
+- immediate contextual export merge failure
+
+Command:
+
+```powershell
+& 'C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe' .\tests\SldWorksLookup.RegressionTests\SldWorksLookup.RegressionTests.csproj /p:Configuration=Release /p:XCadRegDll=false /v:minimal /nologo
+```
+
+RED output excerpt:
+
+```text
+SldWorksLookup -> ...\SldWorksLookup\bin\Release\SldWorksLookup.dll
+Program.cs(185,40): error CS0117: “PathExportUtil”未包含“MergeCurveOrThrow”的定义
+Program.cs(189,38): error CS0117: “PathExportUtil”未包含“MergeCurveOrThrow”的定义
+```
+
+The RED failure was expected because the new dependency-free export state helper did not exist.
+
+### Follow-up GREEN
+
+Build command:
+
+```powershell
+& 'C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe' .\tests\SldWorksLookup.RegressionTests\SldWorksLookup.RegressionTests.csproj /p:Configuration=Release /p:XCadRegDll=false /v:minimal /nologo
+```
+
+Build output excerpt:
+
+```text
+SldWorksLookup -> ...\SldWorksLookup\bin\Release\SldWorksLookup.dll
+SldWorksLookup.RegressionTests -> ...\tests\SldWorksLookup.RegressionTests\bin\Release\net472\SldWorksLookup.RegressionTests.exe
+```
+
+Runner command:
+
+```powershell
+& .\tests\SldWorksLookup.RegressionTests\bin\Release\net472\SldWorksLookup.RegressionTests.exe
+```
+
+Runner output:
+
+```text
+PASS PathTopologyReturnsEveryDisconnectedSegment
+PASS PathTopologyReturnsClosedLoop
+PASS PathTopologyReversesOpenFirstSegment
+PASS PathTopologyReversesConnectedSuccessor
+PASS PathTopologyKeepsEveryStepContinuous
+PASS PathTopologyDoesNotReorderOrRemoveInputSegments
+PASS SamplingPlanCarriesSpacingAcrossShortSegment
+PASS SamplingPlanRejectsNonPositiveOrNonFiniteStep
+PASS SamplingPlanReturnsNormalSpacing
+PASS SamplingPlanHandlesExactCarryBoundary
+PASS ExportMergeFailureThrowsContext
+```
+
+Additional verification:
+
+```text
+git diff --check
+```
+
+Result: exit 0; warnings only report LF-to-CRLF normalization.
+
+### Follow-up Self-review
+
+- `PathExportUtil` now guards the result of `CreateTrimmedCurve2`, `CreateWireBody`, `doc as PartDoc`, and `MergeCurves`.
+- Merge failure is handled immediately by `MergeCurveOrThrow` with contextual `InvalidOperationException`; a null merge cannot silently become the next segment on a later loop.
+- `SketchChainTopology.Build<T>` and its private helpers now use `where T : class`, matching the `ReferenceEquals` identity semantics.
+- No AssemblyInfo version values changed in either commit; the only AssemblyInfo change remains `InternalsVisibleTo("SldWorksLookup.RegressionTests")`.

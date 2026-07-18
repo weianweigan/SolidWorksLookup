@@ -13,6 +13,7 @@ namespace SldWorksLookup.PathSplit
             Func<T, Point3D> getEndPoint,
             Action<T> reverse,
             Func<Point3D, Point3D, bool> pointsEqual)
+            where T : class
         {
             if (segments == null)
                 throw new ArgumentNullException(nameof(segments));
@@ -56,6 +57,7 @@ namespace SldWorksLookup.PathSplit
             Func<T, Point3D> getStartPoint,
             Func<T, Point3D> getEndPoint,
             Func<Point3D, Point3D, bool> pointsEqual)
+            where T : class
         {
             for (var i = 0; i < segments.Count; i++)
             {
@@ -77,6 +79,7 @@ namespace SldWorksLookup.PathSplit
             Func<T, Point3D> getStartPoint,
             Func<T, Point3D> getEndPoint,
             Func<Point3D, Point3D, bool> pointsEqual)
+            where T : class
         {
             foreach (var segment in segments)
             {
@@ -97,6 +100,7 @@ namespace SldWorksLookup.PathSplit
             Func<T, Point3D> getEndPoint,
             Action<T> reverse,
             Func<Point3D, Point3D, bool> pointsEqual)
+            where T : class
         {
             while (remaining.Count > 0)
             {

@@ -1,4 +1,5 @@
 using SldWorksLookup.PathSplit;
+using SldWorksLookup.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +15,15 @@ namespace SldWorksLookup.RegressionTests
             {
                 PathTopologyReturnsEveryDisconnectedSegment,
                 PathTopologyReturnsClosedLoop,
+                PathTopologyReversesOpenFirstSegment,
+                PathTopologyReversesConnectedSuccessor,
+                PathTopologyKeepsEveryStepContinuous,
+                PathTopologyDoesNotReorderOrRemoveInputSegments,
                 SamplingPlanCarriesSpacingAcrossShortSegment,
-                SamplingPlanRejectsNonPositiveOrNonFiniteStep
+                SamplingPlanRejectsNonPositiveOrNonFiniteStep,
+                SamplingPlanReturnsNormalSpacing,
+                SamplingPlanHandlesExactCarryBoundary,
+                ExportMergeFailureThrowsContext
             };
 
             var failed = 0;
@@ -79,12 +87,110 @@ namespace SldWorksLookup.RegressionTests
             AssertClose(0.25, plan.DistanceToNextPoint, "Distance to next point");
         }
 
+        private static void PathTopologyReversesOpenFirstSegment()
+        {
+            var first = new Segment(Point(1, 0), Point(0, 0));
+            var second = new Segment(Point(1, 0), Point(2, 0));
+            var segments = new List<Segment> { first, second };
+
+            var chains = BuildChains(segments);
+
+            AssertEqual(1, chains.Count, "Chain count");
+            AssertSame(first, chains[0][0], "First segment instance");
+            AssertPointEqual(Point(0, 0), chains[0][0].Start, "Reversed first start");
+            AssertPointEqual(Point(1, 0), chains[0][0].End, "Reversed first end");
+            AssertPointEqual(chains[0][0].End, chains[0][1].Start, "First-to-second continuity");
+        }
+
+        private static void PathTopologyReversesConnectedSuccessor()
+        {
+            var first = new Segment(Point(0, 0), Point(1, 0));
+            var second = new Segment(Point(2, 0), Point(1, 0));
+            var segments = new List<Segment> { first, second };
+
+            var chains = BuildChains(segments);
+
+            AssertEqual(1, chains.Count, "Chain count");
+            AssertSame(second, chains[0][1], "Second segment instance");
+            AssertPointEqual(Point(1, 0), chains[0][1].Start, "Reversed successor start");
+            AssertPointEqual(Point(2, 0), chains[0][1].End, "Reversed successor end");
+            AssertPointEqual(chains[0][0].End, chains[0][1].Start, "Successor continuity");
+        }
+
+        private static void PathTopologyKeepsEveryStepContinuous()
+        {
+            var segments = new List<Segment>
+            {
+                new Segment(Point(3, 0), Point(2, 0)),
+                new Segment(Point(0, 0), Point(1, 0)),
+                new Segment(Point(2, 0), Point(1, 0)),
+                new Segment(Point(3, 0), Point(4, 0))
+            };
+
+            var chains = BuildChains(segments);
+
+            AssertEqual(1, chains.Count, "Chain count");
+            for (var i = 1; i < chains[0].Count; i++)
+            {
+                AssertPointEqual(chains[0][i - 1].End, chains[0][i].Start, "Continuity at segment " + i);
+            }
+        }
+
+        private static void PathTopologyDoesNotReorderOrRemoveInputSegments()
+        {
+            var first = new Segment(Point(1, 0), Point(0, 0));
+            var second = new Segment(Point(1, 0), Point(2, 0));
+            var third = new Segment(Point(3, 0), Point(4, 0));
+            var segments = new List<Segment> { first, second, third };
+
+            BuildChains(segments);
+
+            AssertEqual(3, segments.Count, "Input segment count");
+            AssertSame(first, segments[0], "Input first segment");
+            AssertSame(second, segments[1], "Input second segment");
+            AssertSame(third, segments[2], "Input third segment");
+        }
+
         private static void SamplingPlanRejectsNonPositiveOrNonFiniteStep()
         {
             AssertThrows<ArgumentOutOfRangeException>(() => SegmentSamplingPlan.Create(1.0, 0, 0), "Zero step");
             AssertThrows<ArgumentOutOfRangeException>(() => SegmentSamplingPlan.Create(1.0, -1.0, 0), "Negative step");
             AssertThrows<ArgumentOutOfRangeException>(() => SegmentSamplingPlan.Create(1.0, double.NaN, 0), "NaN step");
             AssertThrows<ArgumentOutOfRangeException>(() => SegmentSamplingPlan.Create(1.0, double.PositiveInfinity, 0), "Infinite step");
+        }
+
+        private static void SamplingPlanReturnsNormalSpacing()
+        {
+            var plan = SegmentSamplingPlan.Create(5.0, 2.0, 1.0);
+
+            AssertEqual(3, plan.PointCount, "Point count");
+            AssertClose(1.0, plan.FirstDistance, "First distance");
+            AssertClose(2.0, plan.DistanceToNextPoint, "Distance to next point");
+        }
+
+        private static void SamplingPlanHandlesExactCarryBoundary()
+        {
+            var plan = SegmentSamplingPlan.Create(3.0, 2.0, 3.0);
+
+            AssertEqual(1, plan.PointCount, "Point count");
+            AssertClose(3.0, plan.FirstDistance, "First distance");
+            AssertClose(2.0, plan.DistanceToNextPoint, "Distance to next point");
+        }
+
+        private static void ExportMergeFailureThrowsContext()
+        {
+            var existing = new CurveToken("existing");
+            var next = new CurveToken("next");
+
+            var first = PathExportUtil.MergeCurveOrThrow<CurveToken>(null, next, (left, right) => new CurveToken("unused"), "segment 1");
+            AssertSame(next, first, "First curve should initialize export state");
+
+            var ex = AssertThrows<InvalidOperationException>(
+                () => PathExportUtil.MergeCurveOrThrow(existing, next, (left, right) => null, "segment 2"),
+                "Merge failure");
+
+            if (!ex.Message.Contains("segment 2"))
+                throw new InvalidOperationException("Merge failure should include context. Message: " + ex.Message);
         }
 
         private static List<List<Segment>> BuildChains(List<Segment> segments)
@@ -126,16 +232,16 @@ namespace SldWorksLookup.RegressionTests
                 throw new InvalidOperationException(message + ". Expected " + expected + ", got " + actual + ".");
         }
 
-        private static void AssertThrows<TException>(Action action, string message)
+        private static TException AssertThrows<TException>(Action action, string message)
             where TException : Exception
         {
             try
             {
                 action();
             }
-            catch (TException)
+            catch (TException ex)
             {
-                return;
+                return ex;
             }
             catch (Exception ex)
             {
@@ -143,6 +249,16 @@ namespace SldWorksLookup.RegressionTests
             }
 
             throw new InvalidOperationException(message + ". Expected " + typeof(TException).Name + ".");
+        }
+
+        private sealed class CurveToken
+        {
+            public CurveToken(string name)
+            {
+                Name = name;
+            }
+
+            public string Name { get; private set; }
         }
 
         private sealed class Segment
