@@ -31,28 +31,29 @@ namespace SldWorksLookup.Model
 
             try
             {
-                if (InstanceProperty?.Instance is IFeature feat)
-                {
-                    var typeName = feat.GetTypeName2();
-
-                    types = TypeNameToDefinitionUtil.Match(typeName);
-
-                    foreach (var type in types)
+                LazyLoadCompletion.Run(
+                    () =>
                     {
-                        AddNode<IFeature>(f => f.GetDefinition(), 
-                            type, _ => $"{type.Name}({typeName})");
-                        AddNode<IFeature>(f => f.GetSpecificFeature2(),
-                            type, _ => $"{type.Name}({typeName})");
-                    }
-                }
+                        if (InstanceProperty?.Instance is IFeature feat)
+                        {
+                            var typeName = feat.GetTypeName2();
+
+                            types = TypeNameToDefinitionUtil.Match(typeName);
+
+                            foreach (var type in types)
+                            {
+                                AddNode<IFeature>(f => f.GetDefinition(),
+                                    type, _ => $"{type.Name}({typeName})");
+                                AddNode<IFeature>(f => f.GetSpecificFeature2(),
+                                    type, _ => $"{type.Name}({typeName})");
+                            }
+                        }
+                    },
+                    () => NodeStatus = NodeStatus.Ok);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                NodeStatus = NodeStatus.Ok;
             }
         }
 

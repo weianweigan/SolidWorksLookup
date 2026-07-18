@@ -66,3 +66,32 @@ Results:
 
 - Both solution builds still emit existing `MSB3270` architecture warnings because the solution Release mappings build the add-in as Debug x64 while the SDK test project builds as AnyCPU. That configuration mismatch is explicitly assigned to Task 4, so Task 3 did not change solution mappings.
 - COM behavior was verified through reflection/regression tests without launching SolidWorks, per the plan constraint.
+
+## CHANGES_REQUESTED Follow-up
+
+Additional RED coverage added:
+
+- `LazyLoadCompletionMarksOkAfterSuccess`
+- `LazyLoadCompletionLeavesNeedRunWhenLoadThrows`
+- `TypeMatcherGeneratedEntriesUseInterfacesWithSingleLeadingI`
+- `ValueArrayInspectionDisplaysAllNullElements`
+
+Observed RED:
+
+- `LazyLoadCompletion` was missing before the helper was added.
+- After the helper compiled, `TypeMatcherGeneratedEntriesUseInterfacesWithSingleLeadingI` failed on non-interface COM class tuples plus internal-`I` key errors such as `MatenPlace` and `PMDatumData`.
+- `ValueArrayInspectionDisplaysAllNullElements` failed because all-null arrays displayed as `System.Object[]`.
+
+Follow-up implementation:
+
+- Added `LazyLoadCompletion.Run` and changed feature/component lazy loading to mark `NodeStatus.Ok` only after successful load completion. Feature load exceptions are still shown to the user and leave `NodeStatus.NeedRun` for retry.
+- Removed checked-in `SolidWorksTypes` class tuples that do not satisfy the T4 rule and fixed internal-`I` tuple keys without reordering the generated table.
+- Changed `TypeMatcherUtil.tt` to return a grouped/distinct list instead of calling ineffective `list.Distinct()` and discarding the result.
+- Made all-null arrays render as `<NULL>,<NULL>`.
+
+Follow-up verification:
+
+- `Release|Any CPU` solution build exited `0`.
+- `Release|x64` solution build exited `0`.
+- Regression executable exited `0` with all 26 tests passing.
+- `git diff --check` exited `0`.

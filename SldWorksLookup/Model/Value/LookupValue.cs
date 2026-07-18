@@ -434,19 +434,21 @@ namespace SldWorksLookup.Model
             if (Value is Array array)
             {
                 var firstValue = array.Cast<object>().FirstOrDefault(item => item != null);
-                if (firstValue != null)
+                if (firstValue == null)
                 {
-                    var arrayItemType = firstValue.GetType();
-                    if (arrayItemType.IsValueType || arrayItemType == typeof(string))
+                    return string.Join(",", array.Cast<object>().Select(item => item == null ? "<NULL>" : item.ToString()));
+                }
+
+                var arrayItemType = firstValue.GetType();
+                if (arrayItemType.IsValueType || arrayItemType == typeof(string))
+                {
+                    string strValue = string.Empty;
+                    foreach (var item in array)
                     {
-                        string strValue = string.Empty;
-                        foreach (var item in array)
-                        {
-                            var itemValue = item == null ? "<NULL>" : item.ToString();
-                            strValue += string.IsNullOrEmpty(strValue) ? itemValue : $",{itemValue}";
-                        }
-                        return strValue;
+                        var itemValue = item == null ? "<NULL>" : item.ToString();
+                        strValue += string.IsNullOrEmpty(strValue) ? itemValue : $",{itemValue}";
                     }
+                    return strValue;
                 }
             }
 

@@ -38,7 +38,11 @@ namespace SldWorksLookup.RegressionTests
                 ValueArrayInspectionHandlesNullElements,
                 PropertyBrowsingHandlesSetterOnlyProperty,
                 ReferenceParametersDefaultToNull,
-                ComClassWithInternalIMapsToInterface
+                ComClassWithInternalIMapsToInterface,
+                LazyLoadCompletionMarksOkAfterSuccess,
+                LazyLoadCompletionLeavesNeedRunWhenLoadThrows,
+                TypeMatcherGeneratedEntriesUseInterfacesWithSingleLeadingI,
+                ValueArrayInspectionDisplaysAllNullElements
             };
 
             var failed = 0;
@@ -347,6 +351,57 @@ namespace SldWorksLookup.RegressionTests
         private static void ComClassWithInternalIMapsToInterface()
         {
             AssertSame(typeof(IImportDxfDwgData), TypeMatcherUtil.Match(typeof(ImportDxfDwgDataClass)), "Import DXF/DWG interface");
+        }
+
+        private static void LazyLoadCompletionMarksOkAfterSuccess()
+        {
+            var nodeStatus = NodeStatus.NeedRun;
+            var loadCount = 0;
+
+            LazyLoadCompletion.Run(
+                () => loadCount++,
+                () => nodeStatus = NodeStatus.Ok);
+
+            AssertEqual(1, loadCount, "Load count");
+            AssertEqual(NodeStatus.Ok, nodeStatus, "Node status");
+        }
+
+        private static void LazyLoadCompletionLeavesNeedRunWhenLoadThrows()
+        {
+            var nodeStatus = NodeStatus.NeedRun;
+            var markOkCount = 0;
+
+            AssertThrows<InvalidOperationException>(
+                () => LazyLoadCompletion.Run(
+                    () => { throw new InvalidOperationException("load failed"); },
+                    () =>
+                    {
+                        markOkCount++;
+                        nodeStatus = NodeStatus.Ok;
+                    }),
+                "Lazy load failure");
+
+            AssertEqual(0, markOkCount, "Mark OK count");
+            AssertEqual(NodeStatus.NeedRun, nodeStatus, "Node status");
+        }
+
+        private static void TypeMatcherGeneratedEntriesUseInterfacesWithSingleLeadingI()
+        {
+            var errors = TypeMatcherUtil.SolidWorksTypes
+                .Where(tuple => !tuple.Item2.IsInterface || tuple.Item1 != tuple.Item2.Name.Substring(1))
+                .Select(tuple => tuple.Item1 + " => " + tuple.Item2.Name)
+                .ToArray();
+
+            if (errors.Length > 0)
+                throw new InvalidOperationException("Invalid TypeMatcher entries: " + string.Join("; ", errors));
+        }
+
+        private static void ValueArrayInspectionDisplaysAllNullElements()
+        {
+            var values = new object[] { null, null };
+            var lookup = LookupValue.CreateValue(values, typeof(object[]));
+
+            AssertEqual("<NULL>,<NULL>", lookup.ValueName, "All-null array display");
         }
 
         private static List<List<Segment>> BuildChains(List<Segment> segments)

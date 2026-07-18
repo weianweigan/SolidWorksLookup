@@ -13,15 +13,13 @@ namespace SldWorksLookup.Model
 
         public override void AddNodesLazy()
         {
-            try
-            {
-                AddNodes<IComponent2, IFeature>(comp => comp.GetFeatures().ToArray(),
-                    feat => $"{feat.Name}({nameof(IFeature)})");
-            }
-            finally
-            {
-                NodeStatus = NodeStatus.Ok;
-            }
+            LazyLoadCompletion.Run(
+                () =>
+                {
+                    AddNodes<IComponent2, IFeature>(comp => comp.GetFeatures().ToArray(),
+                        feat => $"{feat.Name}({nameof(IFeature)})");
+                },
+                () => NodeStatus = NodeStatus.Ok);
         }
     }
 }

@@ -99,8 +99,10 @@ public class TypeMatcher:IComparable<TypeMatcher>
                                         list.Add(new TypeMatcher(name.Substring(1), $"typeof({name})"));
                                     }
                                 }
-							    list.Distinct();
-                                return list;
+                                return list
+                                    .GroupBy(p => p.TypeName)
+                                    .Select(p => p.First())
+                                    .ToList();
 				}
 
 #>

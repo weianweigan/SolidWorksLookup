@@ -197,6 +197,7 @@
     <Compile Include="Model\Tree\ILoop2InstanceTree.cs" />
     <Compile Include="Model\Tree\IModelDoc2InstanceTree.cs" />
     <Compile Include="Model\Tree\InstanceTree.cs" />
+    <Compile Include="Model\Tree\LazyLoadCompletion.cs" />
     <Compile Include="Model\Instance\MethodInstanceProperty.cs" />
     <Compile Include="Model\Property\LookupMethodProperty.cs" />
     <Compile Include="Model\Property\LookupParameterProperty.cs" />
