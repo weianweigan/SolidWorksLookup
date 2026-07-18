@@ -1,4 +1,5 @@
-﻿using SldWorksLookup.ViewModel;
+using SldWorksLookup.Helper;
+using SldWorksLookup.ViewModel;
 using System;
 using System.Windows;
 using System.Windows.Interop;
@@ -20,14 +21,19 @@ namespace SldWorksLookup.View
             InitializeComponent();
 
             _viewModel = new CaptureCmdViewModel(_app);
-            _viewModel.CloseAction = new Action(() => this.Close());
+            ConstructionCleanup.Run(
+                () =>
+                {
+                    _viewModel.CloseAction = new Action(() => this.Close());
 
-            var interopHelper = new WindowInteropHelper(this);
-            interopHelper.Owner = _app.WindowHandle;
+                    var interopHelper = new WindowInteropHelper(this);
+                    interopHelper.Owner = _app.WindowHandle;
 
-            this.Closed += CaptureCmd_Closed;
+                    this.Closed += CaptureCmd_Closed;
 
-            DataContext = _viewModel;
+                    DataContext = _viewModel;
+                },
+                () => _viewModel.Dispose());
         }
 
         private void CaptureCmd_Closed(object sender, EventArgs e)

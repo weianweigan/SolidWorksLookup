@@ -10,6 +10,12 @@
   - `CS0103`: `ExceptionUtil` did not exist.
   - `CS0117`: `LogExtension.TryReadConfiguration` did not exist.
 
+- Review-fix command:
+  `msbuild .\tests\SldWorksLookup.RegressionTests\SldWorksLookup.RegressionTests.csproj /p:Configuration=Release /p:XCadRegDll=false /v:minimal /nologo`
+- Result: failed as expected after adding construction-cleanup tests.
+- Evidence:
+  - `CS0103`: `ConstructionCleanup` did not exist.
+
 ## GREEN
 
 - Command:
@@ -18,7 +24,7 @@
 
 - Command:
   `.\tests\SldWorksLookup.RegressionTests\bin\Release\net472\SldWorksLookup.RegressionTests.exe`
-- Result: passed 16 regression tests, including all Task 1 and Task 2 tests.
+- Result: passed 18 regression tests, including all Task 1 and Task 2 tests.
 
 - Command:
   `msbuild .\SldWorksLookup.sln /p:Configuration=Release '/p:Platform=Any CPU' /p:XCadRegDll=false /v:minimal /nologo`
@@ -36,6 +42,7 @@
 
 - Created `SldWorksLookup/Helper/SelectionAccessScope.cs`.
 - Created `SldWorksLookup/Helper/ExceptionUtil.cs`.
+- Created `SldWorksLookup/Helper/ConstructionCleanup.cs`.
 - Modified `tests/SldWorksLookup.RegressionTests/Program.cs`.
 - Modified `SldWorksLookup/AddIn.cs`.
 - Modified `SldWorksLookup/LogExtension.cs`.

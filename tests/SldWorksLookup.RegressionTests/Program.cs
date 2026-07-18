@@ -30,7 +30,9 @@ namespace SldWorksLookup.RegressionTests
                 SelectionAccessScopeDoesNotRunBodyWhenAcquireFails,
                 ExceptionUtilUnwrapsTargetInvocationException,
                 LogConfigurationReadsTwoTrimmedValues,
-                LogConfigurationRejectsMissingOrIncompleteFile
+                LogConfigurationRejectsMissingOrIncompleteFile,
+                ConstructionCleanupRunsCleanupOnceWhenInitializeThrows,
+                ConstructionCleanupDoesNotCleanupWhenInitializeSucceeds
             };
 
             var failed = 0;
@@ -279,6 +281,34 @@ namespace SldWorksLookup.RegressionTests
             {
                 File.Delete(path);
             }
+        }
+
+        private static void ConstructionCleanupRunsCleanupOnceWhenInitializeThrows()
+        {
+            var cleanupCount = 0;
+            var expected = new InvalidOperationException("owner failed");
+
+            var actual = AssertThrows<InvalidOperationException>(
+                () => ConstructionCleanup.Run(
+                    () => { throw expected; },
+                    () => cleanupCount++),
+                "Initialize failure");
+
+            AssertSame(expected, actual, "Original exception");
+            AssertEqual(1, cleanupCount, "Cleanup count");
+        }
+
+        private static void ConstructionCleanupDoesNotCleanupWhenInitializeSucceeds()
+        {
+            var cleanupCount = 0;
+            var initializeCount = 0;
+
+            ConstructionCleanup.Run(
+                () => initializeCount++,
+                () => cleanupCount++);
+
+            AssertEqual(1, initializeCount, "Initialize count");
+            AssertEqual(0, cleanupCount, "Cleanup count");
         }
 
         private static List<List<Segment>> BuildChains(List<Segment> segments)

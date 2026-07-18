@@ -169,6 +169,7 @@
     <Compile Include="Helper\PathExportUtil.cs" />
     <Compile Include="Helper\PIDComObjectMatcherUtil.cs" />
     <Compile Include="Helper\SelectTypeMatcherUtil.cs" />
+    <Compile Include="Helper\ConstructionCleanup.cs" />
     <Compile Include="Helper\ExceptionUtil.cs" />
     <Compile Include="Helper\SelectionAccessScope.cs" />
     <Compile Include="Helper\TypeMatcherUtil.cs">
