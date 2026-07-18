@@ -247,7 +247,9 @@ namespace SldWorksLookup.Model
             }
             catch (Exception ex)
             {
-                ex.ToExceptionless(LogExtension.Client).Submit();
+                MessageBox.Show(ExceptionUtil.GetUserMessage(ex));
+                if (LogExtension.Client != null)
+                    ex.ToExceptionless(LogExtension.Client).Submit();
             }
         }
 
@@ -298,7 +300,7 @@ namespace SldWorksLookup.Model
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show(ex.Message);
+                            MessageBox.Show(ExceptionUtil.GetUserMessage(ex));
                             return;
                         }
                     }

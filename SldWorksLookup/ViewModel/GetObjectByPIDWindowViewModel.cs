@@ -5,6 +5,7 @@ using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 using System;
 using Xarial.XCad;
+using SldWorksLookup.Helper;
 
 namespace SldWorksLookup.View
 {
@@ -61,7 +62,7 @@ namespace SldWorksLookup.View
             }
             catch (Exception ex)
             {
-                _application.ShowMessageBox(ex.Message);
+                _application.ShowMessageBox(ExceptionUtil.GetUserMessage(ex));
             }
         }
 

@@ -1,57 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Exceptionless;
-using System.Text;
-using System.Threading.Tasks;
+using System;
+using System.Diagnostics;
 using System.IO;
-using Xarial.XCad.SolidWorks.Enums;
+using Exceptionless;
 using Exceptionless.Logging;
+using Xarial.XCad.SolidWorks.Enums;
 
 namespace SldWorksLookup
 {
     internal static class LogExtension
     {
         public static readonly string LogFolder = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"SldWorksLookup",
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SldWorksLookup",
             "Log");
 
         public static ExceptionlessClient Client { get; private set; }
 
         internal static void LogStart(
-            Version version, 
-            SwVersion_e sldWorksVersion, 
+            Version version,
+            SwVersion_e sldWorksVersion,
             string userName)
         {
             try
             {
                 var configFile = Path.Combine(
-                Path.GetDirectoryName(typeof(LogExtension).Assembly.Location),
-                "exceptionless.txt");
+                    Path.GetDirectoryName(typeof(LogExtension).Assembly.Location),
+                    "exceptionless.txt");
 
-                string[] data = new string[] { "", "" };
-                if (!File.Exists(configFile))
-                {
-                    data = File.ReadAllLines(configFile);
-                }
-
-
-                if (data.Length < 2)
+                string serverUrl;
+                string apiKey;
+                if (!TryReadConfiguration(configFile, out serverUrl, out apiKey))
                     return;
 
                 Client = new ExceptionlessClient(c =>
                 {
-                    c.ServerUrl = data[0].Trim();
-                    c.ApiKey = data[1].Trim();
+                    c.ServerUrl = serverUrl;
+                    c.ApiKey = apiKey;
                     c.SetVersion(version);
                 });
 
-                //服务信息收集配置
                 Client.Configuration.IncludePrivateInformation = true;
                 Client.Configuration.IncludeMachineName = true;
                 Client.Configuration.IncludeIpAddress = true;
-                
-                //设置本地存储日志文件夹
+
                 try
                 {
                     if (!Directory.Exists(LogFolder))
@@ -65,7 +55,6 @@ namespace SldWorksLookup
                         .Submit();
                 }
 
-                //开启心跳追踪
                 var uid = $"{Environment.UserName}@{Environment.MachineName}";
                 Client.Configuration.SetUserIdentity(uid, userName ?? uid);
                 Client.Configuration.UseSessions();
@@ -77,7 +66,42 @@ namespace SldWorksLookup
             }
             catch (Exception ex)
             {
+                Debug.WriteLine(ex);
+            }
+        }
 
+        internal static bool TryReadConfiguration(string path, out string serverUrl, out string apiKey)
+        {
+            serverUrl = null;
+            apiKey = null;
+
+            try
+            {
+                if (!File.Exists(path))
+                    return false;
+
+                var data = File.ReadAllLines(path);
+                if (data.Length < 2)
+                    return false;
+
+                serverUrl = data[0].Trim();
+                apiKey = data[1].Trim();
+
+                if (string.IsNullOrWhiteSpace(serverUrl) || string.IsNullOrWhiteSpace(apiKey))
+                {
+                    serverUrl = null;
+                    apiKey = null;
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                serverUrl = null;
+                apiKey = null;
+                return false;
             }
         }
 

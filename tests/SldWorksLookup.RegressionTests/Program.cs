@@ -2,7 +2,9 @@ using SldWorksLookup.PathSplit;
 using SldWorksLookup.Helper;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Media.Media3D;
 
 namespace SldWorksLookup.RegressionTests
@@ -23,7 +25,12 @@ namespace SldWorksLookup.RegressionTests
                 SamplingPlanRejectsNonPositiveOrNonFiniteStep,
                 SamplingPlanReturnsNormalSpacing,
                 SamplingPlanHandlesExactCarryBoundary,
-                ExportMergeFailureThrowsContext
+                ExportMergeFailureThrowsContext,
+                SelectionAccessScopeReleasesWhenBodyThrows,
+                SelectionAccessScopeDoesNotRunBodyWhenAcquireFails,
+                ExceptionUtilUnwrapsTargetInvocationException,
+                LogConfigurationReadsTwoTrimmedValues,
+                LogConfigurationRejectsMissingOrIncompleteFile
             };
 
             var failed = 0;
@@ -193,6 +200,87 @@ namespace SldWorksLookup.RegressionTests
                 throw new InvalidOperationException("Merge failure should include context. Message: " + ex.Message);
         }
 
+        private static void SelectionAccessScopeReleasesWhenBodyThrows()
+        {
+            var releaseCount = 0;
+            var ex = AssertThrows<InvalidOperationException>(
+                () => SelectionAccessScope.Run(
+                    () => true,
+                    () => releaseCount++,
+                    () => { throw new InvalidOperationException("body failed"); }),
+                "Body failure");
+
+            AssertEqual("body failed", ex.Message, "Body exception message");
+            AssertEqual(1, releaseCount, "Release count");
+        }
+
+        private static void SelectionAccessScopeDoesNotRunBodyWhenAcquireFails()
+        {
+            var bodyRunCount = 0;
+            var releaseCount = 0;
+
+            AssertThrows<InvalidOperationException>(
+                () => SelectionAccessScope.Run(
+                    () => false,
+                    () => releaseCount++,
+                    () => bodyRunCount++),
+                "Acquire failure");
+
+            AssertEqual(0, bodyRunCount, "Body run count");
+            AssertEqual(0, releaseCount, "Release count");
+        }
+
+        private static void ExceptionUtilUnwrapsTargetInvocationException()
+        {
+            var inner = new InvalidOperationException("SOLIDWORKS refused the command");
+            var outer = new TargetInvocationException(inner);
+
+            AssertEqual("SOLIDWORKS refused the command", ExceptionUtil.GetUserMessage(outer), "User message");
+        }
+
+        private static void LogConfigurationReadsTwoTrimmedValues()
+        {
+            var path = Path.GetTempFileName();
+            try
+            {
+                File.WriteAllLines(path, new[] { "  https://logs.example.test  ", "  api-key  " });
+
+                string serverUrl;
+                string apiKey;
+                var result = LogExtension.TryReadConfiguration(path, out serverUrl, out apiKey);
+
+                AssertEqual(true, result, "Configuration result");
+                AssertEqual("https://logs.example.test", serverUrl, "Server URL");
+                AssertEqual("api-key", apiKey, "API key");
+            }
+            finally
+            {
+                File.Delete(path);
+            }
+        }
+
+        private static void LogConfigurationRejectsMissingOrIncompleteFile()
+        {
+            string serverUrl;
+            string apiKey;
+            var missingPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N") + ".txt");
+            AssertEqual(false, LogExtension.TryReadConfiguration(missingPath, out serverUrl, out apiKey), "Missing file");
+
+            var path = Path.GetTempFileName();
+            try
+            {
+                File.WriteAllLines(path, new[] { "https://logs.example.test" });
+                AssertEqual(false, LogExtension.TryReadConfiguration(path, out serverUrl, out apiKey), "Incomplete file");
+
+                File.WriteAllLines(path, new[] { "https://logs.example.test", " " });
+                AssertEqual(false, LogExtension.TryReadConfiguration(path, out serverUrl, out apiKey), "Blank api key");
+            }
+            finally
+            {
+                File.Delete(path);
+            }
+        }
+
         private static List<List<Segment>> BuildChains(List<Segment> segments)
         {
             return SketchChainTopology.Build(
@@ -209,6 +297,18 @@ namespace SldWorksLookup.RegressionTests
         }
 
         private static void AssertEqual(int expected, int actual, string message)
+        {
+            if (expected != actual)
+                throw new InvalidOperationException(message + ". Expected " + expected + ", got " + actual + ".");
+        }
+
+        private static void AssertEqual(bool expected, bool actual, string message)
+        {
+            if (expected != actual)
+                throw new InvalidOperationException(message + ". Expected " + expected + ", got " + actual + ".");
+        }
+
+        private static void AssertEqual(string expected, string actual, string message)
         {
             if (expected != actual)
                 throw new InvalidOperationException(message + ". Expected " + expected + ", got " + actual + ".");

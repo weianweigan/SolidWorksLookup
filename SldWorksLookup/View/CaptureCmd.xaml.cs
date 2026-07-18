@@ -34,7 +34,7 @@ namespace SldWorksLookup.View
         {
             this.Closed -= CaptureCmd_Closed;
 
-            _viewModel.DeAttachEvent();
+            _viewModel.Dispose();
         }
     }
 }
