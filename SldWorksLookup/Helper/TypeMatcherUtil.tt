@@ -21,6 +21,19 @@ namespace SldWorksLookup
         public static Type Match(Type sourceType)
         {
             var name = sourceType.Name.Split('.').Last();
+
+            //处理包含 [Type]Class的情况 例如 MathTransformClass
+            if (name.EndsWith("Class"))
+            {
+                name = name.Remove(name.Length - 5, 5);
+            }
+
+            var interfaceType = sourceType.Assembly.GetType($"{sourceType.Namespace}.I{name}");
+            if (interfaceType != null && interfaceType.IsInterface)
+            {
+                return interfaceType;
+            }
+
             var hasValue = SolidWorksTypes.FirstOrDefault(p => p.Item1 == name);
             return hasValue != null ? hasValue.Item2: sourceType;
         }
@@ -77,14 +90,19 @@ public class TypeMatcher:IComparable<TypeMatcher>
 
                                 foreach (Type type in types)
                                 {
-                                    if (Regex.IsMatch(type.FullName,"SolidWorks.Interop.sldworks.I[A-Za-z]+"))
+                                    if (type.IsInterface &&
+                                        Regex.IsMatch(type.FullName,"SolidWorks.Interop.sldworks.I[A-Za-z]+") &&
+                                        type.Name.Length > 1 &&
+                                        char.IsUpper(type.Name[1]))
                                     {
                                         var name = type.FullName.Split('.').Last();
-                                        list.Add(new TypeMatcher(name.Replace("I",""), $"typeof({name})"));
+                                        list.Add(new TypeMatcher(name.Substring(1), $"typeof({name})"));
                                     }
                                 }
-							    list.Distinct();
-                                return list;
+                                return list
+                                    .GroupBy(p => p.TypeName)
+                                    .Select(p => p.First())
+                                    .ToList();
 				}
 
 #>

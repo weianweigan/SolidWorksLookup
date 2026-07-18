@@ -9,11 +9,12 @@ using Xarial.XCad.SolidWorks;
 namespace SldWorksLookup.ViewModel
 {
 
-    public class CaptureCmdViewModel : ViewModelBase
+    public class CaptureCmdViewModel : ViewModelBase, IDisposable
     {
         private SwApplication _app;
         private SldWorks _sw;
         private RelayCommand _closeCommand;
+        private bool _disposed;
 
         public CaptureCmdViewModel(SwApplication app)
         {
@@ -36,8 +37,12 @@ namespace SldWorksLookup.ViewModel
             return 0;
         }
 
-        internal void DeAttachEvent()
+        public void Dispose()
         {
+            if (_disposed)
+                return;
+
+            _disposed = true;
             _sw.CommandOpenPreNotify -= _sw_CommandOpenPreNotify;
         }
     }

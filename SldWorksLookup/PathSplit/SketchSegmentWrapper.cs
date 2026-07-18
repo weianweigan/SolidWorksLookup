@@ -104,11 +104,6 @@ namespace SldWorksLookup.PathSplit
         /// <returns>分割后的点</returns>
         public List<Point3D> SplitSegment(double stepLength, double spareLength ,out double newSpareLength)
         {
-            if (stepLength > GetLength())
-            {
-                throw new InvalidOperationException($"步长：{stepLength} 大于 当前草图元素长度");
-            }
-
             //获取草图线段曲线
             var seCurve = Segment.GetCurve() as ICurve;
 
@@ -131,61 +126,23 @@ namespace SldWorksLookup.PathSplit
         {
             //初始化点几何
             var points = new List<Point3D>();
+            var length = GetLength();
+            var plan = SegmentSamplingPlan.Create(length, stepLength, spareLength);
 
             //获取曲线元素
             curve.GetEndParams(out var startParam, out var endParam, out bool isClosed, out bool isPeriodic);
 
-            if (ReverseSpAndEp)
+            for (var i = 0; i < plan.PointCount; i++)
             {
-                //数量，取整了
-                int num = (int)((GetLength() - spareLength )/ stepLength);
-
-                //步长参数
-                var incr = (endParam - startParam) / (num);
-
-                for (int i = 0; i < num; i++)
-                {
-                    var param = curve.Evaluate(startParam + i * incr) as double[];
-                    points.Add(new Point3D(param[0], param[1], param[2]));
-                }
-
-                if (spareLength < ExtensionMethods.Eplision)
-                {
-                    //第一个点参数
-                    var lastParam = endParam - ((endParam - startParam) / (GetLength() / spareLength));
-                    var lastPoint = curve.Evaluate(lastParam) as double[];
-                    points.Add(lastPoint.ToPoint());
-                }
-
-                //逆序
-                points.Reverse();
-
-                newSpareLength = GetLength() - spareLength - stepLength * num;
-            }
-            else
-            {
-                //第一个点参数
-                var firstParam = ((endParam - startParam) / (GetLength() / spareLength)) + startParam;
-
-                //数量，取整了
-                int num = (int)(GetLength() / stepLength);
-
-                //步长参数
-                var incr = (endParam - firstParam) / (num);
-
-                for (int i = 0; i < num; i++)
-                {
-                    var param = curve.Evaluate(firstParam + i * incr) as double[];
-                    points.Add(new Point3D(param[0], param[1], param[2]));
-                }
-
-                newSpareLength = GetLength() - spareLength - stepLength * num;
+                var distance = plan.FirstDistance + i * stepLength;
+                var ratio = length < ExtensionMethods.Eplision ? 0 : distance / length;
+                var curveRatio = ReverseSpAndEp ? 1 - ratio : ratio;
+                var curveParameter = startParam + (endParam - startParam) * curveRatio;
+                var point = curve.Evaluate(curveParameter) as double[];
+                points.Add(point.ToPoint());
             }
 
-            if (newSpareLength < stepLength)
-            {
-                newSpareLength = stepLength - newSpareLength;
-            }
+            newSpareLength = plan.DistanceToNextPoint;
 
             return points;
         }

@@ -71,6 +71,9 @@ namespace SldWorksLookup.PathSplit
         /// <returns></returns>
         public List<Point3D> Split(double stepLength)
         {
+            if (stepLength <= 0 || double.IsNaN(stepLength) || double.IsInfinity(stepLength))
+                throw new ArgumentOutOfRangeException(nameof(stepLength));
+
             //初始化列表
             List<Point3D> points = new List<Point3D>();
 
@@ -78,8 +81,6 @@ namespace SldWorksLookup.PathSplit
             double spareLength = 0;
             foreach (var seg in Segs)
             {
-                var length = seg.Segment.GetLength();
-
                 //是否有上根线段的剩余长度
                 var curvePts = seg.SplitSegment(stepLength, spareLength,out var nextSpareLength);
 

@@ -10,6 +10,7 @@
     <RootNamespace>SldWorksLookup</RootNamespace>
     <AssemblyName>SldWorksLookup</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <XCadRegDll Condition="'$(XCadRegDll)' == ''">false</XCadRegDll>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
@@ -28,10 +29,11 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -169,6 +171,10 @@
     <Compile Include="Helper\PathExportUtil.cs" />
     <Compile Include="Helper\PIDComObjectMatcherUtil.cs" />
     <Compile Include="Helper\SelectTypeMatcherUtil.cs" />
+    <Compile Include="Helper\ConstructionCleanup.cs" />
+    <Compile Include="Helper\EditScope.cs" />
+    <Compile Include="Helper\ExceptionUtil.cs" />
+    <Compile Include="Helper\SelectionAccessScope.cs" />
     <Compile Include="Helper\TypeMatcherUtil.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -194,6 +200,7 @@
     <Compile Include="Model\Tree\ILoop2InstanceTree.cs" />
     <Compile Include="Model\Tree\IModelDoc2InstanceTree.cs" />
     <Compile Include="Model\Tree\InstanceTree.cs" />
+    <Compile Include="Model\Tree\LazyLoadCompletion.cs" />
     <Compile Include="Model\Instance\MethodInstanceProperty.cs" />
     <Compile Include="Model\Property\LookupMethodProperty.cs" />
     <Compile Include="Model\Property\LookupParameterProperty.cs" />
@@ -216,6 +223,8 @@
     </Compile>
     <Compile Include="PathSplit\PathSplitWindowViewModel.cs" />
     <Compile Include="PathSplit\SketchChain.cs" />
+    <Compile Include="PathSplit\SketchChainTopology.cs" />
+    <Compile Include="PathSplit\SegmentSamplingPlan.cs" />
     <Compile Include="PathSplit\SketchSegmentWrapper.cs" />
     <Compile Include="PathSplit\SketchWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

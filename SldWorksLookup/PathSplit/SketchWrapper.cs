@@ -31,97 +31,31 @@ namespace SldWorksLookup.PathSplit
         #region Public Methods
         public IEnumerable<SketchChain> GetChains()
         {
-            var ses = (_sketch.GetSketchSegments() as object[])
+            var sketchSegments = _sketch.GetSketchSegments() as object[];
+            if (sketchSegments == null)
+                yield break;
+
+            var ses = sketchSegments
                 .Cast<ISketchSegment>()
                 .Select(p => new SketchSegmentWrapper(p))
                 .ToList();
 
-            //挑选出起点
-            for (int i = 0; i < ses.Count; i++)
+            var chains = SketchChainTopology.Build(
+                ses,
+                segment => segment.StartPoint,
+                segment => segment.EndPoint,
+                segment => segment.ReverseSpAndEp = !segment.ReverseSpAndEp,
+                (left, right) => left.ValueEqual(right));
+
+            foreach (var chain in chains)
             {
-                //判断当前直线是否可以作为路径其实直线
-                bool startConnected = false;
-                bool endConnected = false;
-                for (int j = 0; j < ses.Count; j++)
-                {
-                    if (i == j)
-                        continue;
-
-                    if(!startConnected)
-                        startConnected = ses[i].IsStartConnected(ses[j]);
-                    if (!endConnected)
-                        endConnected = ses[i].IsEndConnected(ses[j]);
-
-                    if (startConnected && endConnected)
-                        break;
-                }
-
-                if (!startConnected || !endConnected)
-                {
-                    //起点和其他直线相连，交换起点和终点
-                    if (startConnected)
-                        ses[i].ReverseSpAndEp = true;
-
-                    var chainSes = new List<SketchSegmentWrapper>() { ses[i] };
-                    ses.RemoveAt(i);
-
-                    //构建新列表
-                    var newSes = new List<SketchSegmentWrapper>();
-                    newSes.AddRange(ses);
-
-                    //寻找其他相连直线
-                    var next = chainSes.Last();
-
-                    //递归查找
-                    while (next != null)
-                    {
-                        next = SearchNext(chainSes, next, newSes);
-                    }
-
-                    //从现有列表中剔除
-                    foreach (var usedSe in chainSes)
-                    {
-                        ses.Remove(usedSe);
-                    }
-
-                    //重新查找
-                    i = 0;
-
-                    //返回草图链条
-                    yield return new SketchChain(_sketch,chainSes,_comp);
-                }
+                yield return new SketchChain(_sketch, chain, _comp);
             }
         }
 
         public override string ToString()
         {
             return (_feat?.Name + _comp?.Name2 )?? base.ToString();
-        }
-        #endregion
-
-        #region Private Methods
-        private static SketchSegmentWrapper SearchNext(List<SketchSegmentWrapper> chainSes, SketchSegmentWrapper current, List<SketchSegmentWrapper> newSes)
-        {
-            var next = default(SketchSegmentWrapper);
-            for (int k = 0; k < newSes.Count; k++)
-            {
-                if (current.EndPoint.ValueEqual(newSes[k].StartPoint))
-                {
-                    chainSes.Add(newSes[k]);
-                    newSes.RemoveAt(k--);
-                    next = chainSes.Last();
-                    break;
-                }
-                else if (current.EndPoint.ValueEqual(newSes[k].EndPoint))
-                {
-                    newSes[k].ReverseSpAndEp = true;
-                    chainSes.Add(newSes[k]);
-                    newSes.RemoveAt(k--);
-                    next = chainSes.Last();
-                    break;
-                }
-            }
-            return next;
         }
         #endregion
 

@@ -173,11 +173,12 @@ namespace SldWorksLookup.Model
 
                 if (Value is Array array)
                 {
-                    if (array.Length == 0)
+                    var firstValue = array.Cast<object>().FirstOrDefault(item => item != null);
+                    if (firstValue == null)
                     {
                         return false;
                     }
-                    if (array.GetValue(0).GetType().IsValueType)
+                    if (firstValue.GetType().IsValueType || firstValue is string)
                     {
                         return false;
                     }
@@ -247,7 +248,9 @@ namespace SldWorksLookup.Model
             }
             catch (Exception ex)
             {
-                ex.ToExceptionless(LogExtension.Client).Submit();
+                MessageBox.Show(ExceptionUtil.GetUserMessage(ex));
+                if (LogExtension.Client != null)
+                    ex.ToExceptionless(LogExtension.Client).Submit();
             }
         }
 
@@ -259,6 +262,11 @@ namespace SldWorksLookup.Model
                 List<InstanceProperty> properties = new List<InstanceProperty>();
                 foreach (var item in array)
                 {
+                    if (item == null)
+                    {
+                        continue;
+                    }
+
                     var reDirectType = PropertyReDirectType(item.GetType());
                     var ins = InstanceProperty.Create(item, reDirectType);
 
@@ -298,7 +306,7 @@ namespace SldWorksLookup.Model
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show(ex.Message);
+                            MessageBox.Show(ExceptionUtil.GetUserMessage(ex));
                             return;
                         }
                     }
@@ -318,18 +326,26 @@ namespace SldWorksLookup.Model
                         {
                             if (valueResult.IsValueArray())
                             {
-                                var insProperties = valueResult.ObjToArray()
-                                    .Select(p => InstanceProperty.Create(p, p.GetType()))
-                                    .ToList();
-                                var propertyWindow = new LookupPropertyWindow(insProperties);
-                                propertyWindow.ShowDialog();
+                                ValueName = $"{methodInfo.Name} => {LookupValue.CreateValue(valueResult, valueResult.GetType()).ValueName}";
                             }
                             else
                             {
-                                var reDirectType = ReturnValueReDirectType(returnType);
-                                var instanceProperty = InstanceProperty.Create(valueResult, reDirectType);
-                                var propertyWindow = new LookupPropertyWindow(instanceProperty);
-                                propertyWindow.ShowDialog();
+                                if (valueResult is Array array)
+                                {
+                                    var insProperties = valueResult.ObjToArray()
+                                        .Where(p => p != null)
+                                        .Select(p => InstanceProperty.Create(p, ReturnValueReDirectType(p.GetType())))
+                                        .ToList();
+                                    var propertyWindow = new LookupPropertyWindow(insProperties);
+                                    propertyWindow.ShowDialog();
+                                }
+                                else
+                                {
+                                    var reDirectType = ReturnValueReDirectType(returnType);
+                                    var instanceProperty = InstanceProperty.Create(valueResult, reDirectType);
+                                    var propertyWindow = new LookupPropertyWindow(instanceProperty);
+                                    propertyWindow.ShowDialog();
+                                }
                             }
                         }
                     }
@@ -417,18 +433,22 @@ namespace SldWorksLookup.Model
             //值类型数组的显示值
             if (Value is Array array)
             {
-                if (array.Length > 0)
+                var firstValue = array.Cast<object>().FirstOrDefault(item => item != null);
+                if (firstValue == null)
                 {
-                    var arrayItemType = array.GetValue(0).GetType();
-                    if (arrayItemType.IsValueType || arrayItemType == typeof(string))
+                    return string.Join(",", array.Cast<object>().Select(item => item == null ? "<NULL>" : item.ToString()));
+                }
+
+                var arrayItemType = firstValue.GetType();
+                if (arrayItemType.IsValueType || arrayItemType == typeof(string))
+                {
+                    string strValue = string.Empty;
+                    foreach (var item in array)
                     {
-                        string strValue = string.Empty;
-                        foreach (var item in array)
-                        {
-                            strValue += string.IsNullOrEmpty(strValue) ? item.ToString() : $",{item.ToString()}";
-                        }
-                        return strValue;
+                        var itemValue = item == null ? "<NULL>" : item.ToString();
+                        strValue += string.IsNullOrEmpty(strValue) ? itemValue : $",{itemValue}";
                     }
+                    return strValue;
                 }
             }
 

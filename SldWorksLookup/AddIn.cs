@@ -15,6 +15,7 @@ using SldWorksLookup.View;
 using System;
 using System.Linq;
 using Xarial.XCad.SolidWorks.Enums;
+using SldWorksLookup.Helper;
 
 namespace SldWorksLookup
 {
@@ -24,6 +25,7 @@ namespace SldWorksLookup
     [Icon(typeof(Resource),nameof(Resource.BrowseData_16x))]
     public class AddIn:SwAddInEx
     {
+        private readonly List<CaptureCmd> _captureWindows = new List<CaptureCmd>();
 
         public override void OnConnect()
         {
@@ -135,9 +137,13 @@ namespace SldWorksLookup
             }
             catch (Exception ex)
             {
-                //ex.ToExceptionless(LogExtension.Client)
-                //    .AddTags($"CmdError:{spec}")
-                //    .Submit();
+                Application.ShowMessageBox(ExceptionUtil.GetUserMessage(ex), MessageBoxIcon_e.Error);
+                if (LogExtension.Client != null)
+                {
+                    ex.ToExceptionless(LogExtension.Client)
+                        .AddTags($"CmdError:{spec}")
+                        .Submit();
+                }
             }
         }
 
@@ -173,35 +179,48 @@ namespace SldWorksLookup
             try
             {
                 var featData = feat.GetDefinition() as IAdvancedHoleFeatureData;
-
-                featData.AccessSelections(doc, null);
-
-                var elems =(featData.GetNearSideElements() as object[]).Cast<IAdvancedHoleElementData>().ToList();
-
-                var types = new List<Type>() {
-                    typeof(ICounterboreElementData),
-                    typeof(ICountersinkElementData),
-                    typeof(IStraightElementData),
-                    typeof(IStraightTapElementData ),
-                    typeof(ITaperedTapElementData)};
-
-                foreach (var ele in elems)
+                if (featData == null)
                 {
-                    var matchtype = types.FirstOrDefault(p => p.IsInstanceOfType(ele));
-
-                    ins.Add(InstanceProperty.Create(ele,matchtype ?? typeof(IAdvancedHoleElementData)));
-                }
-                ins.Add(InstanceProperty.Create("Base Type", typeof(string)));
-                foreach (var ele in elems)
-                {
-                    ins.Add(InstanceProperty.Create(ele,typeof(IAdvancedHoleElementData)));
+                    Application.ShowMessageBox("Cannot read advancedhole definition");
+                    return;
                 }
 
-                featData.ReleaseSelectionAccess();
+                SelectionAccessScope.Run(
+                    () => featData.AccessSelections(doc, null),
+                    () => featData.ReleaseSelectionAccess(),
+                    () =>
+                    {
+                        var nearSideElements = featData.GetNearSideElements() as object[];
+                        if (nearSideElements == null)
+                            throw new InvalidOperationException("Advancedhole near-side elements are unavailable.");
+
+                        var elems = nearSideElements
+                            .OfType<IAdvancedHoleElementData>()
+                            .ToList();
+
+                        var types = new List<Type>() {
+                            typeof(ICounterboreElementData),
+                            typeof(ICountersinkElementData),
+                            typeof(IStraightElementData),
+                            typeof(IStraightTapElementData ),
+                            typeof(ITaperedTapElementData)};
+
+                        foreach (var ele in elems)
+                        {
+                            var matchtype = types.FirstOrDefault(p => p.IsInstanceOfType(ele));
+
+                            ins.Add(InstanceProperty.Create(ele, matchtype ?? typeof(IAdvancedHoleElementData)));
+                        }
+                        ins.Add(InstanceProperty.Create("Base Type", typeof(string)));
+                        foreach (var ele in elems)
+                        {
+                            ins.Add(InstanceProperty.Create(ele, typeof(IAdvancedHoleElementData)));
+                        }
+                    });
             }
             catch (System.Exception ex)
             {
-                Application.Sw.SendMsgToUser($"{ex.Message},{type} Cannot match a SolidWorks Interface");
+                Application.Sw.SendMsgToUser($"{ExceptionUtil.GetUserMessage(ex)},{type} Cannot match a SolidWorks Interface");
             }
 
             var selPpopWindow = CreatePopupWindow<View.LookupPropertyWindow>();
@@ -218,6 +237,8 @@ namespace SldWorksLookup
         private void ShowCaptureWindow()
         {
             var window = new CaptureCmd(Application);
+            _captureWindows.Add(window);
+            window.Closed += (sender, args) => _captureWindows.Remove(window);
             window?.Show();
         }
 
@@ -227,6 +248,7 @@ namespace SldWorksLookup
             if (doc == null)
             {
                 Application.ShowMessageBox($"No active doc");
+                return;
             }
             var getObjectVM = new GetObjectByPIDWindowViewModel(doc, this.Application);
             var window = CreatePopupWindow<GetObjectByPIDWindow>();
@@ -324,6 +346,11 @@ namespace SldWorksLookup
 
         public override void OnDisconnect()
         {
+            foreach (var window in _captureWindows.ToList())
+            {
+                window.Close();
+            }
+            _captureWindows.Clear();
             LogExtension.LogEnded();
         }
     }

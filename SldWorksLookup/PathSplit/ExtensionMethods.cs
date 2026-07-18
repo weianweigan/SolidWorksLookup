@@ -39,9 +39,9 @@ namespace SldWorksLookup.PathSplit
                 var subFeats = feat.GetSubFeats();
                 foreach (var subfeat in subFeats)
                 {
-                    if (feat.GetTypeName2() == "ProfileFeature")
+                    if (subfeat.GetTypeName2() == "ProfileFeature")
                     {
-                        yield return new Tuple<IFeature, IComponent2>(feat,comp);
+                        yield return new Tuple<IFeature, IComponent2>(subfeat,comp);
                     }
                 }
                 if (feat.GetTypeName2() == "ProfileFeature")

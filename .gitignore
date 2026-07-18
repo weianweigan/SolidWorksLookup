@@ -356,3 +356,6 @@ MigrationBackup/
 # ExceptionLessConfig
 
 exceptionless.txt
+
+# Local agent workflow state
+.superpowers/
