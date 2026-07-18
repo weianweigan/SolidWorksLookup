@@ -1,11 +1,10 @@
-﻿using Microsoft.VisualBasic;
+using Microsoft.VisualBasic;
+using SldWorksLookup.PathSplit;
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
 namespace SldWorksLookup.Helper
@@ -14,17 +13,36 @@ namespace SldWorksLookup.Helper
     {
         public static void Export(SolidWorks.Interop.sldworks.ISldWorks sw)
         {
+            if (sw == null)
+                throw new ArgumentNullException(nameof(sw));
+
             var modeler = sw.GetModeler() as IModeler;
+            if (modeler == null)
+                throw new InvalidOperationException("Cannot get SolidWorks modeler.");
 
             var doc = sw.IActiveDoc2;
+            if (doc == null)
+                throw new InvalidOperationException("No active document.");
 
-            var feat = doc.ISelectionManager.GetSelectedObject6(1, -1) as IFeature;
+            var selectionManager = doc.ISelectionManager;
+            if (selectionManager == null)
+                throw new InvalidOperationException("Cannot get selection manager.");
+
+            var feat = selectionManager.GetSelectedObject6(1, -1) as IFeature;
+            if (feat == null)
+                throw new InvalidOperationException("Select a sketch feature before exporting.");
 
             var ske = feat.GetSpecificFeature2() as ISketch;
+            if (ske == null)
+                throw new InvalidOperationException("Selected feature is not a sketch.");
 
             doc.EditSketch();
 
-            var ses = (ske.GetSketchSegments() as object[]).Cast<ISketchSegment>().ToList();
+            var sketchSegmentArray = ske.GetSketchSegments() as object[];
+            if (sketchSegmentArray == null || sketchSegmentArray.Length == 0)
+                throw new InvalidOperationException("Selected sketch has no sketch segments.");
+
+            var ses = sketchSegmentArray.Cast<ISketchSegment>().ToList();
 
             doc.ClearSelection2(true);
 
@@ -36,96 +54,58 @@ namespace SldWorksLookup.Helper
             doc.SketchManager.MakeSketchChain();
             doc.ClearSelection2(true);
 
-            var path = (ske.GetSketchPaths() as object[]).Cast<ISketchPath>().First();
-            
-            var segs = (path.GetSketchSegments() as object[]).Cast<ISketchSegment>();
+            var pathArray = ske.GetSketchPaths() as object[];
+            if (pathArray == null || pathArray.Length == 0)
+                throw new InvalidOperationException("No sketch path was generated.");
+
+            var path = pathArray.Cast<ISketchPath>().FirstOrDefault();
+            if (path == null)
+                throw new InvalidOperationException("Generated sketch path is invalid.");
+
+            var pathSegmentArray = path.GetSketchSegments() as object[];
+            if (pathSegmentArray == null || pathSegmentArray.Length == 0)
+                throw new InvalidOperationException("Generated sketch path has no segments.");
+
+            var segs = pathSegmentArray.Cast<ISketchSegment>();
 
             ICurve curve = null;
             foreach (var seg in segs)
             {
                 var seCurve = seg.GetCurve() as ICurve;
+                if (seCurve == null)
+                    throw new InvalidOperationException("Cannot get sketch segment curve.");
 
-                //剪裁曲线
-                GetSpAndEp(seg,out Point3D sp,out Point3D ep);
+                var wrapper = new SketchSegmentWrapper(seg);
+                var sp = wrapper.SourceStartPoint;
+                var ep = wrapper.SourceEndPoint;
 
                 seCurve = seCurve.CreateTrimmedCurve2(sp.X, sp.Y, sp.Z, ep.X, ep.Y, ep.Z);
 
                 var body = seCurve.CreateWireBody();
                 body.Display2(doc as PartDoc, Information.RGB(255, 0, 0), (int)swTempBodySelectOptions_e.swTempBodySelectOptionNone);
 
-                if (curve == null)
-                {
-                    curve = seCurve;
-                }
-                else
-                {
-                    curve = modeler.MergeCurves(new object[] { curve, seCurve });
-                }
+                curve = curve == null
+                    ? seCurve
+                    : modeler.MergeCurves(new object[] { curve, seCurve });
             }
+
+            if (curve == null)
+                throw new InvalidOperationException("Cannot create a merged curve from the generated sketch path.");
 
             doc.InsertSketch();
 
-            var points = SplitCurve(curve,10); 
+            var points = SplitCurve(curve, 10);
 
             doc.Insert3DSketch();
             var ske3D = doc.SketchManager.ActiveSketch;
 
             foreach (var point in points)
             {
-                doc.SketchManager.CreatePoint(point.X,point.Y,point.Z);
-
+                doc.SketchManager.CreatePoint(point.X, point.Y, point.Z);
             }
         }
 
-        private static void GetSpAndEp(ISketchSegment seg, out Point3D sp, out Point3D ep)
-        {
-            sp = default;ep = default;
-            switch ((swSketchSegments_e)seg.GetType())
-            {
-                case swSketchSegments_e.swSketchLINE:
-                    var line = seg as ISketchLine;
-                    sp = (line.GetStartPoint2() as ISketchPoint).ToPoint();
-                    ep = (line.GetEndPoint2() as ISketchPoint).ToPoint();
-                    break;
-                case swSketchSegments_e.swSketchARC:
-                    var arc = seg as ISketchArc;
-                    sp = (arc.GetStartPoint2() as ISketchPoint).ToPoint();
-                    ep = (arc.GetStartPoint2() as ISketchPoint).ToPoint();
-                    break;
-                case swSketchSegments_e.swSketchELLIPSE:
-                    var eli= seg as ISketchEllipse;
-                    sp = (eli.GetStartPoint2() as ISketchPoint).ToPoint();
-                    ep = (eli.GetStartPoint2() as ISketchPoint).ToPoint();
-                    break;
-                case swSketchSegments_e.swSketchSPLINE:
-                    var spline = seg as SketchSpline;
-                    var points = (spline.GetPoints2() as object[]).Cast<SketchPoint>().ToList();
-                    sp = new Point3D(points[0].X, points[0].Y, points[0].Z);
-                    ep = new Point3D(points[points.Count-1].X, points[points.Count - 1].Y, points[points.Count - 1].Z);
-                    break;
-                case swSketchSegments_e.swSketchTEXT:
-                    throw new NotSupportedException();
-                case swSketchSegments_e.swSketchPARABOLA:
-                    var para = seg as SketchParabola;
-                    sp = (para.GetStartPoint2() as ISketchPoint).ToPoint();
-                    ep = (para.GetStartPoint2() as ISketchPoint).ToPoint();
-                    break;
-                default:
-                    throw new NotSupportedException();
-            }
-        }
-
-        public static Point3D ToPoint(this double[] point)
-        {
-            return new Point3D(point[0], point[1], point[2]);
-        }
-
-        public static Point3D ToPoint(this ISketchPoint skePoint)
-        {
-            return new Point3D(skePoint.X, skePoint.Y, skePoint.Z);
-        }
-
-        public static List<Point3D> SplitCurve(ICurve curve,int num)
+        public static List<Point3D> SplitCurve(ICurve curve, int num)
         {
             var points = new List<Point3D>();
 
@@ -142,5 +122,4 @@ namespace SldWorksLookup.Helper
             return points;
         }
     }
-
 }

@@ -216,6 +216,8 @@
     </Compile>
     <Compile Include="PathSplit\PathSplitWindowViewModel.cs" />
     <Compile Include="PathSplit\SketchChain.cs" />
+    <Compile Include="PathSplit\SketchChainTopology.cs" />
+    <Compile Include="PathSplit\SegmentSamplingPlan.cs" />
     <Compile Include="PathSplit\SketchSegmentWrapper.cs" />
     <Compile Include="PathSplit\SketchWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
