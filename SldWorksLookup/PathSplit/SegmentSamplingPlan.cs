@@ -23,6 +23,8 @@ namespace SldWorksLookup.PathSplit
                 throw new ArgumentOutOfRangeException(nameof(stepLength));
             if (segmentLength < 0 || double.IsNaN(segmentLength) || double.IsInfinity(segmentLength))
                 throw new ArgumentOutOfRangeException(nameof(segmentLength));
+            if (distanceToNextPoint < 0 || double.IsNaN(distanceToNextPoint) || double.IsInfinity(distanceToNextPoint))
+                throw new ArgumentOutOfRangeException(nameof(distanceToNextPoint));
 
             if (distanceToNextPoint > segmentLength)
                 return new SegmentSamplingPlan(0, 0, distanceToNextPoint - segmentLength);

@@ -36,78 +36,85 @@ namespace SldWorksLookup.Helper
             if (ske == null)
                 throw new InvalidOperationException("Selected feature is not a sketch.");
 
-            doc.EditSketch();
-
-            var sketchSegmentArray = ske.GetSketchSegments() as object[];
-            if (sketchSegmentArray == null || sketchSegmentArray.Length == 0)
-                throw new InvalidOperationException("Selected sketch has no sketch segments.");
-
-            var ses = sketchSegmentArray.Cast<ISketchSegment>().ToList();
-
-            doc.ClearSelection2(true);
-
-            for (int i = 0; i < ses.Count; i++)
-            {
-                ses[i].Select4(true, null);
-            }
-
-            doc.SketchManager.MakeSketchChain();
-            doc.ClearSelection2(true);
-
-            var pathArray = ske.GetSketchPaths() as object[];
-            if (pathArray == null || pathArray.Length == 0)
-                throw new InvalidOperationException("No sketch path was generated.");
-
-            var path = pathArray.Cast<ISketchPath>().FirstOrDefault();
-            if (path == null)
-                throw new InvalidOperationException("Generated sketch path is invalid.");
-
-            var pathSegmentArray = path.GetSketchSegments() as object[];
-            if (pathSegmentArray == null || pathSegmentArray.Length == 0)
-                throw new InvalidOperationException("Generated sketch path has no segments.");
-
-            var segs = pathSegmentArray.Cast<ISketchSegment>();
-
             ICurve curve = null;
-            foreach (var seg in segs)
-            {
-                var seCurve = seg.GetCurve() as ICurve;
-                if (seCurve == null)
-                    throw new InvalidOperationException("Cannot get sketch segment curve.");
 
-                var wrapper = new SketchSegmentWrapper(seg);
-                var sp = wrapper.SourceStartPoint;
-                var ep = wrapper.SourceEndPoint;
+            EditScope.Run(
+                () => doc.EditSketch(),
+                () => doc.InsertSketch(),
+                () =>
+                {
+                    var sketchSegmentArray = ske.GetSketchSegments() as object[];
+                    if (sketchSegmentArray == null || sketchSegmentArray.Length == 0)
+                        throw new InvalidOperationException("Selected sketch has no sketch segments.");
 
-                seCurve = seCurve.CreateTrimmedCurve2(sp.X, sp.Y, sp.Z, ep.X, ep.Y, ep.Z);
-                seCurve = RequireExportValue(seCurve, "Cannot trim sketch segment curve.");
+                    var ses = sketchSegmentArray.Cast<ISketchSegment>().ToList();
 
-                var body = seCurve.CreateWireBody();
-                body = RequireExportValue(body, "Cannot create wire body for trimmed sketch segment curve.");
+                    doc.ClearSelection2(true);
 
-                var partDoc = RequireExportValue(doc as PartDoc, "Active document is not a part document.");
-                body.Display2(partDoc, Information.RGB(255, 0, 0), (int)swTempBodySelectOptions_e.swTempBodySelectOptionNone);
+                    for (int i = 0; i < ses.Count; i++)
+                    {
+                        ses[i].Select4(true, null);
+                    }
 
-                curve = MergeCurveOrThrow(
-                    curve,
-                    seCurve,
-                    (left, right) => modeler.MergeCurves(new object[] { left, right }) as ICurve,
-                    "while merging sketch path segment");
-            }
+                    doc.SketchManager.MakeSketchChain();
+                    doc.ClearSelection2(true);
 
-            if (curve == null)
-                throw new InvalidOperationException("Cannot create a merged curve from the generated sketch path.");
+                    var pathArray = ske.GetSketchPaths() as object[];
+                    if (pathArray == null || pathArray.Length == 0)
+                        throw new InvalidOperationException("No sketch path was generated.");
 
-            doc.InsertSketch();
+                    var path = pathArray.Cast<ISketchPath>().FirstOrDefault();
+                    if (path == null)
+                        throw new InvalidOperationException("Generated sketch path is invalid.");
+
+                    var pathSegmentArray = path.GetSketchSegments() as object[];
+                    if (pathSegmentArray == null || pathSegmentArray.Length == 0)
+                        throw new InvalidOperationException("Generated sketch path has no segments.");
+
+                    var segs = pathSegmentArray.Cast<ISketchSegment>();
+
+                    foreach (var seg in segs)
+                    {
+                        var seCurve = seg.GetCurve() as ICurve;
+                        if (seCurve == null)
+                            throw new InvalidOperationException("Cannot get sketch segment curve.");
+
+                        var wrapper = new SketchSegmentWrapper(seg);
+                        var sp = wrapper.SourceStartPoint;
+                        var ep = wrapper.SourceEndPoint;
+
+                        seCurve = seCurve.CreateTrimmedCurve2(sp.X, sp.Y, sp.Z, ep.X, ep.Y, ep.Z);
+                        seCurve = RequireExportValue(seCurve, "Cannot trim sketch segment curve.");
+
+                        var body = seCurve.CreateWireBody();
+                        body = RequireExportValue(body, "Cannot create wire body for trimmed sketch segment curve.");
+
+                        var partDoc = RequireExportValue(doc as PartDoc, "Active document is not a part document.");
+                        body.Display2(partDoc, Information.RGB(255, 0, 0), (int)swTempBodySelectOptions_e.swTempBodySelectOptionNone);
+
+                        curve = MergeCurveOrThrow(
+                            curve,
+                            seCurve,
+                            (left, right) => modeler.MergeCurves(new object[] { left, right }) as ICurve,
+                            "while merging sketch path segment");
+                    }
+
+                    if (curve == null)
+                        throw new InvalidOperationException("Cannot create a merged curve from the generated sketch path.");
+                });
 
             var points = SplitCurve(curve, 10);
 
-            doc.Insert3DSketch();
-
-            foreach (var point in points)
-            {
-                doc.SketchManager.CreatePoint(point.X, point.Y, point.Z);
-            }
+            EditScope.Run(
+                () => doc.Insert3DSketch(),
+                () => doc.Insert3DSketch(),
+                () =>
+                {
+                    foreach (var point in points)
+                    {
+                        doc.SketchManager.CreatePoint(point.X, point.Y, point.Z);
+                    }
+                });
         }
 
         internal static TCurve MergeCurveOrThrow<TCurve>(

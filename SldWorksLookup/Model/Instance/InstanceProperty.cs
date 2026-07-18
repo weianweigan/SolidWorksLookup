@@ -2,6 +2,7 @@
 using SolidWorks.Interop.sldworks;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
 
@@ -278,7 +279,10 @@ namespace SldWorksLookup.Model
             {
                 lookupProperty = LookupMethodProperty.Create(method, instance);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
             return lookupProperty != null;
         }
 

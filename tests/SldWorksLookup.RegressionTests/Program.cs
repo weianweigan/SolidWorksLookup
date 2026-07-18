@@ -25,9 +25,12 @@ namespace SldWorksLookup.RegressionTests
                 PathTopologyDoesNotReorderOrRemoveInputSegments,
                 SamplingPlanCarriesSpacingAcrossShortSegment,
                 SamplingPlanRejectsNonPositiveOrNonFiniteStep,
+                SamplingPlanRejectsInvalidCarryDistance,
                 SamplingPlanReturnsNormalSpacing,
                 SamplingPlanHandlesExactCarryBoundary,
                 ExportMergeFailureThrowsContext,
+                EditScopeExitsOnceAndRethrowsBodyException,
+                EditScopeExitsOnceAfterSuccess,
                 SelectionAccessScopeReleasesWhenBodyThrows,
                 SelectionAccessScopeDoesNotRunBodyWhenAcquireFails,
                 ExceptionUtilUnwrapsTargetInvocationException,
@@ -178,6 +181,13 @@ namespace SldWorksLookup.RegressionTests
             AssertThrows<ArgumentOutOfRangeException>(() => SegmentSamplingPlan.Create(1.0, double.PositiveInfinity, 0), "Infinite step");
         }
 
+        private static void SamplingPlanRejectsInvalidCarryDistance()
+        {
+            AssertThrows<ArgumentOutOfRangeException>(() => SegmentSamplingPlan.Create(1.0, 1.0, -0.1), "Negative carry distance");
+            AssertThrows<ArgumentOutOfRangeException>(() => SegmentSamplingPlan.Create(1.0, 1.0, double.NaN), "NaN carry distance");
+            AssertThrows<ArgumentOutOfRangeException>(() => SegmentSamplingPlan.Create(1.0, 1.0, double.PositiveInfinity), "Infinite carry distance");
+        }
+
         private static void SamplingPlanReturnsNormalSpacing()
         {
             var plan = SegmentSamplingPlan.Create(5.0, 2.0, 1.0);
@@ -210,6 +220,40 @@ namespace SldWorksLookup.RegressionTests
 
             if (!ex.Message.Contains("segment 2"))
                 throw new InvalidOperationException("Merge failure should include context. Message: " + ex.Message);
+        }
+
+        private static void EditScopeExitsOnceAndRethrowsBodyException()
+        {
+            var enterCount = 0;
+            var exitCount = 0;
+            var expected = new InvalidOperationException("body failed");
+
+            var actual = AssertThrows<InvalidOperationException>(
+                () => EditScope.Run(
+                    () => enterCount++,
+                    () => exitCount++,
+                    () => { throw expected; }),
+                "Body failure");
+
+            AssertSame(expected, actual, "Original exception");
+            AssertEqual(1, enterCount, "Enter count");
+            AssertEqual(1, exitCount, "Exit count");
+        }
+
+        private static void EditScopeExitsOnceAfterSuccess()
+        {
+            var enterCount = 0;
+            var bodyCount = 0;
+            var exitCount = 0;
+
+            EditScope.Run(
+                () => enterCount++,
+                () => exitCount++,
+                () => bodyCount++);
+
+            AssertEqual(1, enterCount, "Enter count");
+            AssertEqual(1, bodyCount, "Body count");
+            AssertEqual(1, exitCount, "Exit count");
         }
 
         private static void SelectionAccessScopeReleasesWhenBodyThrows()

@@ -29,7 +29,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -172,6 +172,7 @@
     <Compile Include="Helper\PIDComObjectMatcherUtil.cs" />
     <Compile Include="Helper\SelectTypeMatcherUtil.cs" />
     <Compile Include="Helper\ConstructionCleanup.cs" />
+    <Compile Include="Helper\EditScope.cs" />
     <Compile Include="Helper\ExceptionUtil.cs" />
     <Compile Include="Helper\SelectionAccessScope.cs" />
     <Compile Include="Helper\TypeMatcherUtil.cs">

@@ -26,6 +26,22 @@ function Assert-XmlFile([string]$relativePath) {
     return $xml
 }
 
+function Assert-ProjectProperty([string]$relativePath, [string]$condition, [string]$propertyName, [string]$expectedValue, [string]$message) {
+    $xml = Assert-XmlFile $relativePath
+    $namespaceManager = New-Object System.Xml.XmlNamespaceManager($xml.NameTable)
+    $namespaceManager.AddNamespace('msb', 'http://schemas.microsoft.com/developer/msbuild/2003')
+
+    $propertyGroup = $xml.SelectSingleNode("//msb:PropertyGroup[@Condition=`"$condition`"]", $namespaceManager)
+    if ($null -eq $propertyGroup) {
+        throw "Missing project property group: $condition"
+    }
+
+    $property = $propertyGroup.SelectSingleNode("msb:$propertyName", $namespaceManager)
+    if ($null -eq $property -or $property.InnerText -ne $expectedValue) {
+        throw $message
+    }
+}
+
 $solution = Read-RepoFile 'SldWorksLookup.sln'
 $project = Read-RepoFile 'SldWorksLookup\SldWorksLookup.csproj'
 $testsProject = Read-RepoFile 'tests\SldWorksLookup.RegressionTests\SldWorksLookup.RegressionTests.csproj'
@@ -39,6 +55,7 @@ Assert-NotMatches $solution 'Release\|Any CPU\.(ActiveCfg|Build\.0) = Debug\|' '
 Assert-NotMatches $solution 'Release\|x64\.(ActiveCfg|Build\.0) = Debug\|' 'Release|x64 must not build a Debug project configuration.'
 
 Assert-Matches $project '<XCadRegDll\s+Condition="''\$\(XCadRegDll\)'' == ''''">false</XCadRegDll>' 'XCadRegDll must default to false while allowing command-line overrides.'
+Assert-ProjectProperty 'SldWorksLookup\SldWorksLookup.csproj' ' ''$(Configuration)|$(Platform)'' == ''Release|AnyCPU'' ' 'OutputPath' '..\bin\' 'Release|AnyCPU output must refresh the root bin directory used by the installer.'
 
 Assert-Matches $install 'cd /d "%~dp0" \|\| exit /b 1' 'Install.bat must run from its own directory.'
 Assert-Matches $install 'if not exist "%~dp0RegAsm\.exe" exit /b 2' 'Install.bat must verify RegAsm.exe exists.'
